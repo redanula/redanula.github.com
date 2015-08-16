@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2015-08-16T15:21:21.000Z</updated>
+  <updated>2015-08-16T16:17:33.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -13,6 +13,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[markdown语法备忘]]></title>
+    <link href="http://yoursite.com/2015/08/17/markdown-mark/"/>
+    <id>http://yoursite.com/2015/08/17/markdown-mark/</id>
+    <published>2015-08-16T16:01:59.000Z</published>
+    <updated>2015-08-16T16:17:33.000Z</updated>
+    <content type="html"><![CDATA[<p>参考<a href="http://ibruce.info/2013/11/26/markdown/" title="不如的博客" target="_blank" rel="external">markdown简明语法</a></p>
+<hr>
+<ol>
+<li>强调用*或_</li>
+<li>多级标题用n个#号</li>
+<li>大标题、小标题用3个或以上===、—</li>
+<li>引用&lt;、&lt;&lt;</li>
+<li>行内代码&lt;!–￼0–&gt;</li>
+<li>段落代码每行前加1个tab</li>
+<li>无序列表用+或-号</li>
+<li>文字链接用[text](url,””)；超链接用<url>;图片链接用![text](url,””)</url></li>
+</ol>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>参考<a href="http://ibruce.info/2013/11/26/markdown/" title="不如的博客" target="_blank" rel="external">markdown简明语法</a></p>
+<hr>
+<ol>
+<li>强调用*或]]>
+    </summary>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[hexo搭建博客done]]></title>
