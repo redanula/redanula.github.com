@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2015-08-16T16:17:33.000Z</updated>
+  <updated>2015-08-16T16:23:46.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yoursite.com/2015/08/17/markdown-mark/"/>
     <id>http://yoursite.com/2015/08/17/markdown-mark/</id>
     <published>2015-08-16T16:01:59.000Z</published>
-    <updated>2015-08-16T16:17:33.000Z</updated>
+    <updated>2015-08-16T16:23:46.000Z</updated>
     <content type="html"><![CDATA[<p>参考<a href="http://ibruce.info/2013/11/26/markdown/" title="不如的博客" target="_blank" rel="external">markdown简明语法</a></p>
 <hr>
 <ol>
@@ -39,6 +39,8 @@
 <ol>
 <li>强调用*或]]>
     </summary>
+    
+      <category term="markdown" scheme="http://yoursite.com/tags/markdown/"/>
     
   </entry>
   
