@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2015-08-18T14:08:34.000Z</updated>
+  <updated>2015-08-18T14:08:35.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yoursite.com/2015/08/18/NSDictionary-NSMutableDictionary/"/>
     <id>http://yoursite.com/2015/08/18/NSDictionary-NSMutableDictionary/</id>
     <published>2015-08-18T13:35:24.000Z</published>
-    <updated>2015-08-18T14:08:34.000Z</updated>
+    <updated>2015-08-18T14:08:35.000Z</updated>
     <content type="html"><![CDATA[<p>转自：<a href="http://seven-sally.lofter.com/post/19d861_5404fa" target="_blank" rel="external">http://seven-sally.lofter.com/post/19d861_5404fa</a></p>
 <h2 id="不可变词典NSDictionary">不可变词典NSDictionary</h2><h3 id="字典初始化">字典初始化</h3><pre><code><span class="built_in">NSNumber</span> *numObj = [<span class="built_in">NSNumber</span> numberWithInt:<span class="number">100</span>];
 </code></pre><h3 id="以一个元素初始化">以一个元素初始化</h3><pre><code>NSDictionary *dic = [NSDictionary <span class="string">dictionaryWithObject:</span>numObj <span class="string">forKey:</span>@<span class="string">"key"</span>];
