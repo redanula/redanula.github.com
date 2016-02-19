@@ -195,6 +195,74 @@
           
           
             
+              <a class="post-title-link" href="/2016/02/19/20160219QA/" itemprop="url">
+                20160219QA
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2016-02-19T10:38:12+08:00" content="2016-02-19">
+            2016-02-19
+          </time>
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2016/02/19/20160219QA/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count ds-thread-count" data-thread-key="2016/02/19/20160219QA/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"></span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2015/11/26/UITableView-and-UIActivityIndicatorView/" itemprop="url">
                 UITableView-and-UIActivityIndicatorView 同页面的设置
               </a>
@@ -305,63 +373,46 @@
       
         
           <span itemprop="articleBody"><p>转自：<a href="http://seven-sally.lofter.com/post/19d861_5404fa" target="_blank" rel="external">http://seven-sally.lofter.com/post/19d861_5404fa</a></p>
-<h2 id="不可变词典NSDictionary">不可变词典NSDictionary</h2><h3 id="字典初始化">字典初始化</h3><pre><code><span class="built_in">NSNumber</span> *numObj = [<span class="built_in">NSNumber</span> numberWithInt:<span class="number">100</span>];
-</code></pre><h3 id="以一个元素初始化">以一个元素初始化</h3><pre><code>NSDictionary *dic = [NSDictionary <span class="string">dictionaryWithObject:</span>numObj <span class="string">forKey:</span>@<span class="string">"key"</span>];
-</code></pre><h3 id="初始化两个元素">初始化两个元素</h3><pre><code><span class="built_in">NSDictionary</span> *dic = [<span class="built_in">NSDictionary</span> dictionaryWithObjectsAndKeys:numObj, <span class="string">@"valueKey"</span>, numObj2, <span class="string">@"value2"</span>,<span class="literal">nil</span>];
-</code></pre><h3 id="初始化新字典，新字典包含otherDic">初始化新字典，新字典包含otherDic</h3><pre><code><span class="built_in">NSDictionary</span> *dic = [<span class="built_in">NSDictionary</span> dictionaryWithDictionary:otherDic];
-</code></pre><h3 id="以文件内容初始化字典">以文件内容初始化字典</h3><pre><code><span class="built_in">NSDictionary</span> *dic = [<span class="built_in">NSDictionary</span> dictionaryWithContentsOfFile:path];
-</code></pre><h3 id="常用方法">常用方法</h3><h3 id="获取字典数量">获取字典数量</h3><pre><code>NSInteger <span class="command">count</span> = [dic <span class="command">count</span>];
-</code></pre><h3 id="通过key获取对应的value对象">通过key获取对应的value对象</h3><pre><code>NSObject <span class="keyword">*</span>valueObj = [dic objectForKey:<span class="comment">@"key"];</span>
-</code></pre><h3 id="将字典的key转成枚举对象，用于遍历">将字典的key转成枚举对象，用于遍历</h3><pre><code>NSEnumerator *enumerator = [dic keyEnumerator]<span class="comment">;</span>
-</code></pre><h3 id="获取所有键的集合">获取所有键的集合</h3><pre><code>NSArray *keys = [dic allKeys]<span class="comment">;</span>
-</code></pre><h3 id="获取所有值的集合">获取所有值的集合</h3><pre><code>NSArray *values = [dic allValues]<span class="comment">;</span>
-</code></pre><p><br></p>
-<h2 id="可变数组NSMutableDictionary">可变数组NSMutableDictionary</h2><h3 id="初始化一个空的可变字典">初始化一个空的可变字典</h3><pre><code><span class="built_in">NSMutableDictionary</span> *dic2 = [<span class="built_in">NSMutableDictionary</span> dictionaryWithObjectsAndKeys:<span class="string">@"v1"</span>,<span class="string">@"key1"</span>,<span class="string">@"v2"</span>,<span class="string">@"key2"</span>,<span class="literal">nil</span>];
-
-<span class="built_in">NSDictionary</span> *dic3 = [<span class="built_in">NSDictionary</span> dictionaryWithObject:<span class="string">@"v3"</span> forKey:<span class="string">@"key3"</span>];
-</code></pre><h3 id="向字典2对象中添加整个字典对象3">向字典2对象中添加整个字典对象3</h3><pre><code><span class="title">[dic2 addEntriesFromDictionary:dic3]</span><span class="comment">;</span>
-</code></pre><h3 id="向字典2对象中最佳一个新的key3和value3">向字典2对象中最佳一个新的key3和value3</h3><pre><code>[dic2 <span class="built_in">set</span>Value:@<span class="string">"value3"</span> <span class="keyword">for</span>Key:@<span class="string">"key3"</span>];
-</code></pre><h3 id="初始化一个空的可变字典-1">初始化一个空的可变字典</h3><pre><code><span class="built_in">NSMutableDictionary</span> *dic1 = [<span class="built_in">NSMutableDictionary</span> dictionary];
-</code></pre><h3 id="将空字典1对象内容设置与字典2对象相同">将空字典1对象内容设置与字典2对象相同</h3><pre><code><span class="title">[dic1 setDictionary:dic2]</span><span class="comment">;</span>
-</code></pre><h3 id="将字典中key1对应的值删除">将字典中key1对应的值删除</h3><pre><code>[dic1 removeObjectForKey<span class="string">@"key1"</span>];
-
-<span class="built_in">NSArray</span> *array = [<span class="built_in">NSArray</span> arrayWithObjects:<span class="string">@"key1"</span>, <span class="literal">nil</span>];
-</code></pre><h3 id="根据指定的数组（key）移除字典1的内容">根据指定的数组（key）移除字典1的内容</h3><pre><code><span class="title">[dic2 removeObjectsForKeys:array]</span><span class="comment">;</span>
-</code></pre><h3 id="移除字典所有对象">移除字典所有对象</h3><pre><code><span class="title">[dic1 removeAllObjects]</span><span class="comment">;</span>
-</code></pre><h3 id="遍历字典">遍历字典</h3><h3 id="快速枚举">快速枚举</h3><pre><code><span class="keyword">for</span> (<span class="keyword">id</span> key <span class="keyword">in</span> dic){
-
-     <span class="keyword">id</span> obj = [dic objectForKey:key];
-
-     <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, obj);
-
-}
-</code></pre><h3 id="一般枚举">一般枚举</h3><pre><code>NSArray *<span class="built_in">keys</span> = [dic allKeys];
-
-inr length = [<span class="built_in">keys</span> <span class="built_in">count</span>];
-
-for (<span class="typename">int</span> i = <span class="number">0</span>; i &lt; length；i++){
-
-     id <span class="built_in">key</span> = [<span class="built_in">keys</span> objectAtIndex:i];
-
-     id obj = [dic objectForKey:<span class="built_in">key</span>];
-
-     NSLog(@<span class="string">"%@"</span>, obj);
-
-}
-</code></pre><h3 id="通过枚举类型枚举">通过枚举类型枚举</h3><pre><code><span class="built_in">NSEnumerator</span> *enumerator = [dic keyEnumerator];
-
-<span class="keyword">id</span> key = [enumerator nextObject];
-
-<span class="keyword">while</span> (key) {
-
-        <span class="keyword">id</span> obj = [dic objectForKey:key];
-
-        <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, obj);
-
-        key = [enumerator nextObject];
-
-}
-</code></pre></span>
+<h2 id="不可变词典NSDictionary">不可变词典NSDictionary</h2><h3 id="字典初始化">字典初始化</h3><p>NSNumber *numObj = [NSNumber numberWithInt:100];</p>
+<h3 id="以一个元素初始化">以一个元素初始化</h3><p>NSDictionary *dic = [NSDictionary dictionaryWithObject:numObj forKey:@”key”];</p>
+<h3 id="初始化两个元素">初始化两个元素</h3><p>NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:numObj, @”valueKey”, numObj2, @”value2”,nil];</p>
+<h3 id="初始化新字典，新字典包含otherDic">初始化新字典，新字典包含otherDic</h3><p>NSDictionary *dic = [NSDictionary dictionaryWithDictionary:otherDic];</p>
+<h3 id="以文件内容初始化字典">以文件内容初始化字典</h3><p>NSDictionary *dic = [NSDictionary dictionaryWithContentsOfFile:path];</p>
+<h3 id="常用方法">常用方法</h3><h3 id="获取字典数量">获取字典数量</h3><p>NSInteger count = [dic count];</p>
+<h3 id="通过key获取对应的value对象">通过key获取对应的value对象</h3><p>NSObject *valueObj = [dic objectForKey:@”key”];</p>
+<h3 id="将字典的key转成枚举对象，用于遍历">将字典的key转成枚举对象，用于遍历</h3><p>NSEnumerator *enumerator = [dic keyEnumerator];</p>
+<h3 id="获取所有键的集合">获取所有键的集合</h3><p>NSArray *keys = [dic allKeys];</p>
+<h3 id="获取所有值的集合">获取所有值的集合</h3><p>NSArray *values = [dic allValues];</p>
+<p><br></p>
+<h2 id="可变数组NSMutableDictionary">可变数组NSMutableDictionary</h2><h3 id="初始化一个空的可变字典">初始化一个空的可变字典</h3><p>NSMutableDictionary *dic2 = [NSMutableDictionary dictionaryWithObjectsAndKeys:@”v1”,@”key1”,@”v2”,@”key2”,nil];</p>
+<p>NSDictionary *dic3 = [NSDictionary dictionaryWithObject:@”v3” forKey:@”key3”];</p>
+<h3 id="向字典2对象中添加整个字典对象3">向字典2对象中添加整个字典对象3</h3><p>[dic2 addEntriesFromDictionary:dic3];</p>
+<h3 id="向字典2对象中最佳一个新的key3和value3">向字典2对象中最佳一个新的key3和value3</h3><p>[dic2 setValue:@”value3” forKey:@”key3”];</p>
+<h3 id="初始化一个空的可变字典-1">初始化一个空的可变字典</h3><p>NSMutableDictionary *dic1 = [NSMutableDictionary dictionary];</p>
+<h3 id="将空字典1对象内容设置与字典2对象相同">将空字典1对象内容设置与字典2对象相同</h3><p>[dic1 setDictionary:dic2];</p>
+<h3 id="将字典中key1对应的值删除">将字典中key1对应的值删除</h3><p>[dic1 removeObjectForKey@”key1”];</p>
+<p>NSArray *array = [NSArray arrayWithObjects:@”key1”, nil];</p>
+<h3 id="根据指定的数组（key）移除字典1的内容">根据指定的数组（key）移除字典1的内容</h3><p>[dic2 removeObjectsForKeys:array];</p>
+<h3 id="移除字典所有对象">移除字典所有对象</h3><p>[dic1 removeAllObjects];</p>
+<h3 id="遍历字典">遍历字典</h3><h3 id="快速枚举">快速枚举</h3><p>for (id key in dic){</p>
+<p>id obj = [dic objectForKey:key];</p>
+<p>NSLog(@”%@”, obj);</p>
+<p>}</p>
+<h3 id="一般枚举">一般枚举</h3><p>NSArray *keys = [dic allKeys];</p>
+<p>inr length = [keys count];</p>
+<p>for (int i = 0; i &lt; length；i++){</p>
+<p>id key = [keys objectAtIndex:i];</p>
+<p>id obj = [dic objectForKey:key];</p>
+<p>NSLog(@”%@”, obj);</p>
+<p>}</p>
+<h3 id="通过枚举类型枚举">通过枚举类型枚举</h3><p>NSEnumerator *enumerator = [dic keyEnumerator];</p>
+<p>id key = [enumerator nextObject];</p>
+<p>while (key) {</p>
+<p>id obj = [dic objectForKey:key];</p>
+<p>NSLog(@”%@”, obj);</p>
+<p>key = [enumerator nextObject];</p>
+<p>}</p>
+</span>
         
       
     </div>
@@ -639,7 +690,7 @@ for (<span class="typename">int</span> i = <span class="number">0</span>; i &lt;
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-count">6</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
