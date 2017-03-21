@@ -195,6 +195,218 @@
           
           
             
+              <a class="post-title-link" href="/2017/03/21/Python链家爬虫/" itemprop="url">
+                Python链家爬虫
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-03-21T10:23:17+08:00" content="2017-03-21">
+            2017-03-21
+          </time>
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2017/03/21/Python链家爬虫/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/21/Python链家爬虫/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>业余时间做了个链家的爬虫，爬取数据写入sqlite，方便浏览和对比。<br>具体参考了冰蓝大牛的博客<a href="http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;utm_medium=referral</a>, 根据链家最新的web样式做了修改（2017-03）爬在售的二手房的数据。</p>
+<p>链家对短时间内同一个IP的流量有监控，所以如果用多线程去爬可能会被要求输入验证码。试了以下用代理ip池去爬，因为可用的免费的不过也不稳定，就放弃了。后面想数据爬的也不多，就加个延时模拟人为慢慢爬了，另外还有个问题可能是单位时间内Request太快可能解析不到数据，就把延时放在BeautifulSoup解析后面，并加了如果没有数据则重复5次请求的验证过程，才成功抓全数据：</p>
+<pre><code><span class="tag">time</span>.<span class="function"><span class="title">sleep</span><span class="params">(np.random.rand()</span></span>*<span class="number">3</span>+<span class="number">3</span>)
+</code></pre><p>这里贴出关键的匹配代码，代码好粗糙，仅供发参考：）</p>
+<pre><code><span class="function"><span class="keyword">def</span> <span class="title">onsell_spider</span><span class="params">(mydb,url_page=<span class="string">u"http://gz.lianjia.com/ershoufang/pg1rs越秀/"</span>,area=<span class="string">u"越秀"</span>)</span>:</span>
+    <span class="comment"># time.sleep(np.random.rand()*1)</span>
+    <span class="keyword">print</span> url_page
+    counts = <span class="number">0</span>
+    trytime = <span class="number">0</span>
+    <span class="keyword">while</span> counts==<span class="number">0</span> &amp; trytime&lt;=<span class="number">5</span>:
+        <span class="keyword">try</span>:
+            req = urllib2.Request(url_page,headers=hds[random.randint(<span class="number">0</span>,len(hds)-<span class="number">1</span>)])
+            source_code = urllib2.urlopen(req,timeout=<span class="number">10</span>).read()
+            plain_text=unicode(source_code)<span class="comment">#,errors='ignore')   </span>
+            soup = BeautifulSoup(plain_text, <span class="string">"lxml"</span>)
+        <span class="keyword">except</span> (urllib2.HTTPError, urllib2.URLError), e:
+            <span class="keyword">print</span> e
+            exception_write(<span class="string">'onsell_spider'</span>,url_page)
+            <span class="keyword">return</span>
+        <span class="keyword">except</span> Exception,e:
+            <span class="keyword">print</span> e
+            exception_write(<span class="string">'onsell_spider'</span>,url_page)
+            <span class="keyword">return</span>
+        time.sleep(np.random.rand()*<span class="number">3</span>+<span class="number">3</span>)
+        cj_list=soup.findAll(<span class="string">'div'</span>,{<span class="string">'class'</span>:<span class="string">'info clear'</span>})
+
+        <span class="keyword">print</span> len(cj_list)
+        counts = len(cj_list)
+        trytime = trytime + <span class="number">1</span>
+        <span class="keyword">for</span> cj <span class="keyword">in</span> cj_list:
+            info_dict={}
+            href=cj.find(<span class="string">'a'</span>)
+            <span class="keyword">if</span> <span class="keyword">not</span> href:
+                <span class="keyword">continue</span>
+            info_dict.update({<span class="string">u'链接'</span>:href.attrs[<span class="string">'href'</span>]})
+            name=cj.find(<span class="string">'a'</span>).text
+            info_dict.update({<span class="string">u'标题'</span>:name})
+
+     <span class="comment">#href TEXT primary key UNIQUE, name TEXT, community TEXT, style TEXT, area TEXT, orientation TEXT,decoration TEXT,haslift TEXT,floor TEXT, year TEXT, bplace TEXT,splace TEXT, unit_price TEXT, total_price TEXT, subway TEXT, other TEXT</span>
+
+            content=unicode(cj.find(<span class="string">'div'</span>,{<span class="string">'class'</span>:<span class="string">'houseInfo'</span>}).renderContents().strip())
+            info=re.match(<span class="string">r"&lt;span .*&gt;&lt;/span&gt;&lt;a .*&gt;(.*)&lt;/a&gt;(.*)"</span>, content)
+
+            <span class="comment"># print info</span>
+            <span class="keyword">if</span> info:
+                info=info.groups()
+                info_dict.update({<span class="string">u'小区'</span>:info[<span class="number">0</span>]})
+
+                str = info[<span class="number">1</span>].strip().split(<span class="string">'|'</span>)
+                <span class="comment"># print str[1]</span>
+
+                <span class="keyword">try</span>:
+                    info_dict.update({<span class="string">u'户型'</span>:str[<span class="number">1</span>].strip()})
+                <span class="keyword">except</span> Exception,e:
+                    info_dict.update({<span class="string">u'户型'</span>:<span class="string">''</span>})
+                <span class="keyword">try</span>:
+                    info_dict.update({<span class="string">u'面积'</span>:str[<span class="number">2</span>].strip()})
+                <span class="keyword">except</span> Exception,e:
+                    info_dict.update({<span class="string">u'面积'</span>:<span class="string">''</span>})
+                <span class="keyword">try</span>:
+                    info_dict.update({<span class="string">u'朝向'</span>:str[<span class="number">3</span>].strip()})
+                <span class="keyword">except</span> Exception,e:
+                    info_dict.update({<span class="string">u'朝向'</span>:<span class="string">''</span>})
+                <span class="keyword">try</span>:
+                    info_dict.update({<span class="string">u'装修'</span>:str[<span class="number">4</span>].strip()})
+                <span class="keyword">except</span> Exception,e:
+                    info_dict.update({<span class="string">u'装修'</span>:<span class="string">''</span>})
+                <span class="keyword">try</span>:
+                    info_dict.update({<span class="string">u'有无电梯'</span>:str[<span class="number">5</span>].strip()})
+                <span class="keyword">except</span> Exception,e:
+                    info_dict.update({<span class="string">u'有无电梯'</span>:<span class="string">''</span>})
+
+            content=unicode(cj.find(<span class="string">'div'</span>,{<span class="string">'class'</span>:<span class="string">'positionInfo'</span>}).renderContents().strip())
+            info=re.match(<span class="string">r"&lt;span .*&gt;&lt;/span&gt;(.*)\)(.*)&lt;a .*&gt;(.*)&lt;/a&gt;"</span>, content)
+            <span class="keyword">if</span> info:
+                info=info.groups()
+                <span class="comment"># print info</span>
+                info_dict.update({<span class="string">u'楼层'</span>:info[<span class="number">0</span>]})
+                info_dict.update({<span class="string">u'建造时间'</span>:info[<span class="number">1</span>]})
+                info_dict.update({<span class="string">u'大区域'</span>:area})
+                <span class="keyword">try</span>:
+                    info_dict.update({<span class="string">u'小区域'</span>:info[<span class="number">2</span>]})
+                <span class="keyword">except</span> Exception,e:
+                    info_dict.update({<span class="string">u'小区域'</span>:info[<span class="number">2</span>]})
+
+
+            content=cj.find(<span class="string">'div'</span>,{<span class="string">'class'</span>:<span class="string">'unitPrice'</span>}).find(<span class="string">'span'</span>).text
+            <span class="keyword">if</span> content:
+                info_dict.update({<span class="string">u'单价'</span>:content})
+            content=cj.find(<span class="string">'div'</span>,{<span class="string">'class'</span>:<span class="string">'totalPrice'</span>}).find(<span class="string">'span'</span>).text
+            <span class="keyword">if</span> content:
+                info_dict.update({<span class="string">u'总价'</span>:content})
+
+            content=cj.find(<span class="string">'span'</span>,{<span class="string">'class'</span>:<span class="string">'subway'</span>})
+            <span class="comment"># print content</span>
+            <span class="keyword">if</span> content:
+                <span class="keyword">try</span>:
+                    info_dict.update({<span class="string">u'地铁'</span>:content.text})
+                <span class="keyword">except</span> Exception,e:
+                    info_dict.update({<span class="string">u'地铁'</span>:<span class="string">''</span>})
+
+            content=cj.find(<span class="string">'div'</span>,{<span class="string">'class'</span>:<span class="string">'followInfo'</span>}).text
+            <span class="keyword">if</span>  content:
+                info_dict.update({<span class="string">u'其他'</span>:content})
+
+            command=sql_onsell_insert_command(info_dict)
+            mydb.execute(command,<span class="number">1</span>)
+
+
+<span class="function"><span class="keyword">def</span> <span class="title">do_onsell_spider</span><span class="params">(mydb,area=<span class="string">u"越秀"</span>)</span>:</span>
+
+    url=<span class="string">u"http://gz.lianjia.com/ershoufang/pg%drs%s/"</span> % (<span class="number">1</span>,area)
+
+    <span class="keyword">try</span>:
+        req = urllib2.Request(url,headers=hds[random.randint(<span class="number">0</span>,len(hds)-<span class="number">1</span>)])
+        source_code = urllib2.urlopen(req,timeout=<span class="number">10</span>).read()
+        plain_text=unicode(source_code)<span class="comment">#,errors='ignore')   </span>
+        soup = BeautifulSoup(plain_text, <span class="string">"lxml"</span>)
+    <span class="keyword">except</span> (urllib2.HTTPError, urllib2.URLError), e:
+        <span class="keyword">print</span> e
+        exception_write(<span class="string">'do_onsell_spider'</span>,area)
+        <span class="keyword">return</span>
+    <span class="keyword">except</span> Exception,e:
+        <span class="keyword">print</span> e
+        exception_write(<span class="string">'do_onsell_spider'</span>,area)
+        <span class="keyword">return</span>
+
+    time.sleep(np.random.rand()*<span class="number">1</span>+<span class="number">1</span>)
+    content=soup.find(<span class="string">'div'</span>,{<span class="string">'class'</span>:<span class="string">'page-box house-lst-page-box'</span>})
+    <span class="comment"># print soup</span>
+
+    <span class="keyword">if</span> content:
+        d=<span class="string">"d="</span>+content.get(<span class="string">'page-data'</span>)
+        exec(d)
+        total_pages=d[<span class="string">'totalPage'</span>]
+
+    <span class="keyword">print</span> total_pages
+
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(total_pages):
+        time.sleep(np.random.rand()*<span class="number">1</span>)
+        url_page=<span class="string">u"http://gz.lianjia.com/ershoufang/pg%drs%s/"</span> % (i+<span class="number">1</span>,area)
+        onsell_spider(mydb,url_page,area)
+</code></pre><p>对BeautifulSoup的方法还不太熟悉，用的都是简单粗暴的方法，后续再去细看了。</p>
+<p>爬下来的数据：<br>    <img src="/2017/03/21/Python链家爬虫/imgdata.png" alt="imgdata"></p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2017/03/20/Python高德爬虫/" itemprop="url">
                 Python高德爬虫
               </a>
@@ -364,6 +576,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
     app.processEvents()
 </code></pre><p>另外UI使用的是PyQt5，PyQt的UI从运行到打包一堆坑要踩，不过很多问题都可以搜到解决方案。UI部分做了个输入框，输入城市以后可以从本地sqlite查询对应该城市区域的全部编码，然后赋值到wherestr上，开始爬取数据并输出到QTextEdit。</p>
 <p>总的来说，高德地图API对爬虫很友好，企业认证的调用次数上限都很高，只是貌似每次调用最多就只能返回1000条数据，如果说POI分类多，最好分别进行遍历抓取。这个爬虫都是用到很基础的库，后续有时间继续研究~</p>
+<p>效果截图：<br>    <img src="/2017/03/20/Python高德爬虫/imgui.png" alt="imgui"></p>
 </span>
         
       
@@ -820,7 +1033,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">6</span>
+              <span class="site-state-item-count">7</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -834,7 +1047,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

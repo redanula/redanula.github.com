@@ -49,7 +49,8 @@
 因为高德有api，所以爬数据灰常简单。整个流程：输入城市编码-》根据api爬取数据-》导出到Excel使用的库：BeautifulSoup PyQt5 openpyxl urllib2 requests等
 具体思路：
 高德申请api的key，配置好需要爬取的参数：参数城市、POI分类、查询关键词等,如果">
-<meta property="og:updated_time" content="2017-03-20T07:54:40.000Z">
+<meta property="og:image" content="http://yoursite.com/2017/03/20/Python高德爬虫/imgui.png">
+<meta property="og:updated_time" content="2017-03-21T02:59:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python高德爬虫">
 <meta name="twitter:description" content="前段时间因公司需求，需要爬取高德地图的数据，就学习了下Python，并做了个简易的爬虫GUI。
@@ -369,6 +370,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
     app.processEvents()
 </code></pre><p>另外UI使用的是PyQt5，PyQt的UI从运行到打包一堆坑要踩，不过很多问题都可以搜到解决方案。UI部分做了个输入框，输入城市以后可以从本地sqlite查询对应该城市区域的全部编码，然后赋值到wherestr上，开始爬取数据并输出到QTextEdit。</p>
 <p>总的来说，高德地图API对爬虫很友好，企业认证的调用次数上限都很高，只是貌似每次调用最多就只能返回1000条数据，如果说POI分类多，最好分别进行遍历抓取。这个爬虫都是用到很基础的库，后续有时间继续研究~</p>
+<p>效果截图：<br>    <img src="/2017/03/20/Python高德爬虫/imgui.png" alt="imgui"></p>
 </span>
       
     </div>
@@ -389,6 +391,8 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
       
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/21/Python链家爬虫/" rel="prev">Python链家爬虫</a>
             
           </div>
 
@@ -479,7 +483,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">6</span>
+              <span class="site-state-item-count">7</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -493,7 +497,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
