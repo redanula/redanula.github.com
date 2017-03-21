@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2017-03-21T03:03:22.000Z</updated>
+  <updated>2017-03-21T03:27:43.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,13 +15,26 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[iOS-VPN]]></title>
+    <link href="http://yoursite.com/2017/03/21/iOS-VPN/"/>
+    <id>http://yoursite.com/2017/03/21/iOS-VPN/</id>
+    <published>2017-03-21T03:27:43.000Z</published>
+    <updated>2017-03-21T03:27:43.000Z</updated>
+    <content type="html"></content>
+    <summary type="html">
+    
+    </summary>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[Python链家爬虫]]></title>
     <link href="http://yoursite.com/2017/03/21/Python%E9%93%BE%E5%AE%B6%E7%88%AC%E8%99%AB/"/>
     <id>http://yoursite.com/2017/03/21/Python链家爬虫/</id>
     <published>2017-03-21T02:23:17.000Z</published>
-    <updated>2017-03-21T03:03:22.000Z</updated>
+    <updated>2017-03-21T03:37:55.000Z</updated>
     <content type="html"><![CDATA[<p>业余时间做了个链家的爬虫，爬取数据写入sqlite，方便浏览和对比。<br>具体参考了冰蓝大牛的博客<a href="http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;utm_medium=referral</a>, 根据链家最新的web样式做了修改（2017-03）爬在售的二手房的数据。</p>
-<p>链家对短时间内同一个IP的流量有监控，所以如果用多线程去爬，太快可能会被要求输入验证码。试了以下用代理ip池去爬，因为可用的免费的不过也不稳定，就放弃了。后面想数据爬的也不多，就加个延时模拟人为慢慢爬了，另外还有个问题可能是单位时间内Request太快可能解析不到数据，就把延时放在BeautifulSoup解析后面，并加了如果没有数据则重复5次请求的验证过程，才成功抓全数据：</p>
+<p>链家对短时间内同一个IP的流量有监控，所以如果用多线程去爬，太快可能会被要求输入验证码。试了以下用代理ip池去爬，因为可用的免费代理ip不多也不稳定，就放弃了。后面想数据爬的也不多，就加个延时模拟人为慢慢爬了，另外还有个问题可能是单位时间内Request太快可能解析不到数据，就把延时放在BeautifulSoup解析后面，并加了如果没有数据则重复5次请求的验证过程，才成功抓全数据：</p>
 <pre><code><span class="tag">time</span>.<span class="function"><span class="title">sleep</span><span class="params">(np.random.rand()</span></span>*<span class="number">3</span>+<span class="number">3</span>)
 </code></pre><p>这里贴出关键的匹配代码，代码好粗糙，仅供发参考：）</p>
 <pre><code><span class="function"><span class="keyword">def</span> <span class="title">onsell_spider</span><span class="params">(mydb,url_page=<span class="string">u"http://gz.lianjia.com/ershoufang/pg1rs越秀/"</span>,area=<span class="string">u"越秀"</span>)</span>:</span>
