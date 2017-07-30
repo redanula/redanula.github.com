@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2017-03-21T03:37:55.000Z</updated>
+  <updated>2017-07-30T16:14:31.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -13,6 +13,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[iOS Tips--NSDictionarySArray 快捷计算函数]]></title>
+    <link href="http://yoursite.com/2017/07/30/iOS-Tips-NSDictionary-NSArray-%E5%BF%AB%E6%8D%B7%E8%AE%A1%E7%AE%97%E5%87%BD%E6%95%B0/"/>
+    <id>http://yoursite.com/2017/07/30/iOS-Tips-NSDictionary-NSArray-快捷计算函数/</id>
+    <published>2017-07-30T15:15:46.000Z</published>
+    <updated>2017-07-30T16:14:31.000Z</updated>
+    <content type="html"><![CDATA[<p>NSArray 有快捷的汇总公式，只要用 @函数.键路径 即可：</p>
+<pre><code><span class="title">NSArray</span> *array = [NSArray arrayWithObjects:@<span class="string">"1.0"</span>,@<span class="string">"2.0"</span>,nil];
+<span class="title">CGFloat</span> sum = [[array valueForKeyPath:@<span class="string">"<span class="variable">@sum</span>.floatValue"</span>] floatValue];
+<span class="title">CGFloat</span> avg = [[array valueForKeyPath:@<span class="string">"<span class="variable">@avg</span>.floatValue"</span>] floatValue];
+<span class="title">CGFloat</span> max =[[array valueForKeyPath:@<span class="string">"<span class="variable">@max</span>.floatValue"</span>] floatValue];
+<span class="title">CGFloat</span> min =[[array valueForKeyPath:@<span class="string">"<span class="variable">@min</span>.floatValue"</span>] floatValue];
+</code></pre><p>如果汇总值是在NSDictionary里面，同样可以取值进行汇总：</p>
+<pre><code><span class="name">NSArray</span> *<span class="atom">dic</span> = [{@<span class="string">"KeyName1"</span>:@<span class="string">"1.0"</span>,@<span class="string">"KeyName2"</span>:@<span class="string">"abc"</span>},{@<span class="string">"KeyName1"</span>:@<span class="string">"2.0"</span>,@<span class="string">"KeyName2"</span>:@<span class="string">"bcd"</span>}]; 
+<span class="name">CGFloat</span> <span class="atom">sum</span> = [[[<span class="atom">dic</span> <span class="atom">valueForKeyPath</span>:@<span class="string">"KeyName1"</span>] <span class="atom">valueForKeyPath</span>:@<span class="string">"@sum.floatValue"</span>] <span class="atom">floatValue</span>];
+<span class="name">CGFloat</span> <span class="atom">max</span> = [[[<span class="atom">dic</span> <span class="atom">valueForKeyPath</span>:@<span class="string">"KeyName1"</span>] <span class="atom">valueForKeyPath</span>:@<span class="string">"@max.floatValue"</span>] <span class="atom">floatValue</span>];
+</code></pre><p>以上快捷汇总实际是KVC的用法，更多KVC的用法参考<br>1.<a href="http://www.jianshu.com/p/b7dda8d49dc4" target="_blank" rel="external">http://www.jianshu.com/p/b7dda8d49dc4</a><br>2.<a href="https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/KeyValueCoding.html" target="_blank" rel="external">https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/KeyValueCoding.html</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>NSArray 有快捷的汇总公式，只要用 @函数.键路径 即可：</p>
+<pre><code><span class="title">NSArray</span> *array = [NSArray arrayWithObjects:@<span class="strin]]>
+    </summary>
+    
+      <category term="KVC" scheme="http://yoursite.com/tags/KVC/"/>
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Python链家爬虫]]></title>
@@ -334,11 +363,19 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
     <link href="http://yoursite.com/2017/03/01/iOS%20VPN%E5%BC%80%E5%8F%91/"/>
     <id>http://yoursite.com/2017/03/01/iOS VPN开发/</id>
     <published>2017-03-01T03:27:43.000Z</published>
-    <updated>2017-03-21T07:55:01.000Z</updated>
-    <content type="html"></content>
+    <updated>2017-03-23T03:46:35.000Z</updated>
+    <content type="html"><![CDATA[<p>#####参考链接：<br>1.iOS 9 Network Extension VPN API编程指南<a href="http://www.helusi.com/ios9-network-extension-vpn-api/" target="_blank" rel="external">http://www.helusi.com/ios9-network-extension-vpn-api/</a><br>2.分享开发 iOS 和 Mac 全新 VPN 的艰难历程<a href="https://www.v2ex.com/t/264480" target="_blank" rel="external">https://www.v2ex.com/t/264480</a><br>3.Potatso原理解析<a href="https://www.kidneyband.com/?p=174" target="_blank" rel="external">https://www.kidneyband.com/?p=174</a></p>
+<p>#####苹果开发者文档：<br>NEPacketTunnelProvider<a href="https://developer.apple.com/reference/networkextension/nepackettunnelprovider?language=objc" target="_blank" rel="external">https://developer.apple.com/reference/networkextension/nepackettunnelprovider?language=objc</a><br>SimpleTunnel<a href="https://developer.apple.com/library/prerelease/content/samplecode/SimpleTunnel/Introduction/Intro.html" target="_blank" rel="external">https://developer.apple.com/library/prerelease/content/samplecode/SimpleTunnel/Introduction/Intro.html</a></p>
+]]></content>
     <summary type="html">
-    
+    <![CDATA[<p>#####参考链接：<br>1.iOS 9 Network Extension VPN API编程指南<a href="http://www.helusi.com/ios9-network-extension-vpn-api/" target="_blank" rel="e]]>
     </summary>
+    
+      <category term="NEPacketTunnelProvider" scheme="http://yoursite.com/tags/NEPacketTunnelProvider/"/>
+    
+      <category term="Network Extension" scheme="http://yoursite.com/tags/Network-Extension/"/>
+    
+      <category term="iOS VPN" scheme="http://yoursite.com/tags/iOS-VPN/"/>
     
   </entry>
   

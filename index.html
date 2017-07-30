@@ -195,6 +195,85 @@
           
           
             
+              <a class="post-title-link" href="/2017/07/30/iOS-Tips-NSDictionary-NSArray-快捷计算函数/" itemprop="url">
+                iOS Tips--NSDictionarySArray 快捷计算函数
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-07-30T23:15:46+08:00" content="2017-07-30">
+            2017-07-30
+          </time>
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2017/07/30/iOS-Tips-NSDictionary-NSArray-快捷计算函数/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count ds-thread-count" data-thread-key="2017/07/30/iOS-Tips-NSDictionary-NSArray-快捷计算函数/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>NSArray 有快捷的汇总公式，只要用 @函数.键路径 即可：</p>
+<pre><code><span class="title">NSArray</span> *array = [NSArray arrayWithObjects:@<span class="string">"1.0"</span>,@<span class="string">"2.0"</span>,nil];
+<span class="title">CGFloat</span> sum = [[array valueForKeyPath:@<span class="string">"<span class="variable">@sum</span>.floatValue"</span>] floatValue];
+<span class="title">CGFloat</span> avg = [[array valueForKeyPath:@<span class="string">"<span class="variable">@avg</span>.floatValue"</span>] floatValue];
+<span class="title">CGFloat</span> max =[[array valueForKeyPath:@<span class="string">"<span class="variable">@max</span>.floatValue"</span>] floatValue];
+<span class="title">CGFloat</span> min =[[array valueForKeyPath:@<span class="string">"<span class="variable">@min</span>.floatValue"</span>] floatValue];
+</code></pre><p>如果汇总值是在NSDictionary里面，同样可以取值进行汇总：</p>
+<pre><code><span class="name">NSArray</span> *<span class="atom">dic</span> = [{@<span class="string">"KeyName1"</span>:@<span class="string">"1.0"</span>,@<span class="string">"KeyName2"</span>:@<span class="string">"abc"</span>},{@<span class="string">"KeyName1"</span>:@<span class="string">"2.0"</span>,@<span class="string">"KeyName2"</span>:@<span class="string">"bcd"</span>}]; 
+<span class="name">CGFloat</span> <span class="atom">sum</span> = [[[<span class="atom">dic</span> <span class="atom">valueForKeyPath</span>:@<span class="string">"KeyName1"</span>] <span class="atom">valueForKeyPath</span>:@<span class="string">"@sum.floatValue"</span>] <span class="atom">floatValue</span>];
+<span class="name">CGFloat</span> <span class="atom">max</span> = [[[<span class="atom">dic</span> <span class="atom">valueForKeyPath</span>:@<span class="string">"KeyName1"</span>] <span class="atom">valueForKeyPath</span>:@<span class="string">"@max.floatValue"</span>] <span class="atom">floatValue</span>];
+</code></pre><p>以上快捷汇总实际是KVC的用法，更多KVC的用法参考<br>1.<a href="http://www.jianshu.com/p/b7dda8d49dc4" target="_blank" rel="external">http://www.jianshu.com/p/b7dda8d49dc4</a><br>2.<a href="https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/KeyValueCoding.html" target="_blank" rel="external">https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/KeyValueCoding.html</a></p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2017/03/21/Python链家爬虫/" itemprop="url">
                 Python链家爬虫
               </a>
@@ -645,7 +724,9 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
 
       
         
-          <span itemprop="articleBody"></span>
+          <span itemprop="articleBody"><p>#####参考链接：<br>1.iOS 9 Network Extension VPN API编程指南<a href="http://www.helusi.com/ios9-network-extension-vpn-api/" target="_blank" rel="external">http://www.helusi.com/ios9-network-extension-vpn-api/</a><br>2.分享开发 iOS 和 Mac 全新 VPN 的艰难历程<a href="https://www.v2ex.com/t/264480" target="_blank" rel="external">https://www.v2ex.com/t/264480</a><br>3.Potatso原理解析<a href="https://www.kidneyband.com/?p=174" target="_blank" rel="external">https://www.kidneyband.com/?p=174</a></p>
+<p>#####苹果开发者文档：<br>NEPacketTunnelProvider<a href="https://developer.apple.com/reference/networkextension/nepackettunnelprovider?language=objc" target="_blank" rel="external">https://developer.apple.com/reference/networkextension/nepackettunnelprovider?language=objc</a><br>SimpleTunnel<a href="https://developer.apple.com/library/prerelease/content/samplecode/SimpleTunnel/Introduction/Intro.html" target="_blank" rel="external">https://developer.apple.com/library/prerelease/content/samplecode/SimpleTunnel/Introduction/Intro.html</a></p>
+</span>
         
       
     </div>
@@ -1101,7 +1182,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-count">9</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1115,7 +1196,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-count">13</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
