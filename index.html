@@ -195,6 +195,120 @@
           
           
             
+              <a class="post-title-link" href="/2017/07/31/iOS-Article-001/" itemprop="url">
+                iOS本地时间与同步
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-07-31T21:52:35+08:00" content="2017-07-31">
+            2017-07-31
+          </time>
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2017/07/31/iOS-Article-001/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count ds-thread-count" data-thread-key="2017/07/31/iOS-Article-001/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>###概念<br>GMT（Greenwich Mean Time）格林尼治时间<br>UTC（Coordinated Universal Time ）原子钟标准时间<br>Unix time（以UTC 1970年1月1号 00：00：00为基准时间）</p>
+<hr>
+<p>###sysctl API<br>iOS系统上次设备重启时间（iOS9后不能使用）</p>
+<pre><code><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;sys/sysctl.h&gt;</span></span>
+
+- (<span class="keyword">long</span>)bootTime
+{
+    <span class="preprocessor">#<span class="keyword">define</span> MIB_SIZE <span class="number">2</span></span>
+    <span class="keyword">int</span> mib[MIB_SIZE];
+    <span class="keyword">size_t</span> size;
+    <span class="keyword">struct</span> timeval  boottime;
+
+    mib[<span class="number">0</span>] = CTL_KERN;
+    mib[<span class="number">1</span>] = KERN_BOOTTIME;
+    size = <span class="keyword">sizeof</span>(boottime);
+    <span class="keyword">if</span> (sysctl(mib, MIB_SIZE, &amp;boottime, &amp;size, <span class="literal">NULL</span>, <span class="number">0</span>) != -<span class="number">1</span>)
+    {
+        <span class="keyword">return</span> boottime.tv_sec;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre><p>###时间校准</p>
+<p>#####</p>
+<p>1、记录上一次请求的时候获取服务器时间serverTime，与本地时间lastLocalTime</p>
+<p>2、需要计算的时候取出curLocalTime（即NSDate），计算与lastLocalTime的偏移量T</p>
+<p>3、serverTime+T 就是当前的服务器时间</p>
+<p>#####另外，计算运行时长，计算自上一次重启后的运行时间<br>    //get system uptime since last boot</p>
+<pre><code>- (NSTimeInterval)uptime
+{
+    <span class="keyword">struct</span> timeval boottime;
+    <span class="keyword">int</span> mib[<span class="number">2</span>] = {CTL_KERN, KERN_BOOTTIME};
+    <span class="keyword">size_t</span> size = <span class="keyword">sizeof</span>(boottime);
+
+    <span class="keyword">struct</span> timeval now;
+    <span class="keyword">struct</span> timezone tz;
+    gettimeofday(&amp;now, &amp;tz);
+
+    <span class="keyword">double</span> uptime = -<span class="number">1</span>;
+
+    <span class="keyword">if</span> (sysctl(mib, <span class="number">2</span>, &amp;boottime, &amp;size, <span class="literal">NULL</span>, <span class="number">0</span>) != -<span class="number">1</span> &amp;&amp; boottime.tv_sec != <span class="number">0</span>)
+    {
+        uptime = now.tv_sec - boottime.tv_sec;
+        uptime += (<span class="keyword">double</span>)(now.tv_usec - boottime.tv_usec) / <span class="number">1000000.0</span>;
+    }
+    <span class="keyword">return</span> uptime;
+}
+</code></pre></span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2017/07/30/iOS-Tips-NSDictionary-NSArray-快捷计算函数/" itemprop="url">
                 iOS Tips--NSDictionary和NSArray 快捷计算函数
               </a>
@@ -1182,7 +1296,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

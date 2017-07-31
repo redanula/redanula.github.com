@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-31T01:21:37.000Z</updated>
+  <updated>2017-07-31T17:53:35.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,11 +15,72 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[iOS本地时间与同步]]></title>
+    <link href="http://yoursite.com/2017/07/31/iOS-Article-001/"/>
+    <id>http://yoursite.com/2017/07/31/iOS-Article-001/</id>
+    <published>2017-07-31T13:52:35.000Z</published>
+    <updated>2017-07-31T17:53:35.000Z</updated>
+    <content type="html"><![CDATA[<p>###概念<br>GMT（Greenwich Mean Time）格林尼治时间<br>UTC（Coordinated Universal Time ）原子钟标准时间<br>Unix time（以UTC 1970年1月1号 00：00：00为基准时间）</p>
+<hr>
+<p>###sysctl API<br>iOS系统上次设备重启时间（iOS9后不能使用）</p>
+<pre><code><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;sys/sysctl.h&gt;</span></span>
+
+- (<span class="keyword">long</span>)bootTime
+{
+    <span class="preprocessor">#<span class="keyword">define</span> MIB_SIZE <span class="number">2</span></span>
+    <span class="keyword">int</span> mib[MIB_SIZE];
+    <span class="keyword">size_t</span> size;
+    <span class="keyword">struct</span> timeval  boottime;
+
+    mib[<span class="number">0</span>] = CTL_KERN;
+    mib[<span class="number">1</span>] = KERN_BOOTTIME;
+    size = <span class="keyword">sizeof</span>(boottime);
+    <span class="keyword">if</span> (sysctl(mib, MIB_SIZE, &amp;boottime, &amp;size, <span class="literal">NULL</span>, <span class="number">0</span>) != -<span class="number">1</span>)
+    {
+        <span class="keyword">return</span> boottime.tv_sec;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre><p>###时间校准</p>
+<p>#####</p>
+<p>1、记录上一次请求的时候获取服务器时间serverTime，与本地时间lastLocalTime</p>
+<p>2、需要计算的时候取出curLocalTime（即NSDate），计算与lastLocalTime的偏移量T</p>
+<p>3、serverTime+T 就是当前的服务器时间</p>
+<p>#####另外，计算运行时长，计算自上一次重启后的运行时间<br>    //get system uptime since last boot</p>
+<pre><code>- (NSTimeInterval)uptime
+{
+    <span class="keyword">struct</span> timeval boottime;
+    <span class="keyword">int</span> mib[<span class="number">2</span>] = {CTL_KERN, KERN_BOOTTIME};
+    <span class="keyword">size_t</span> size = <span class="keyword">sizeof</span>(boottime);
+
+    <span class="keyword">struct</span> timeval now;
+    <span class="keyword">struct</span> timezone tz;
+    gettimeofday(&amp;now, &amp;tz);
+
+    <span class="keyword">double</span> uptime = -<span class="number">1</span>;
+
+    <span class="keyword">if</span> (sysctl(mib, <span class="number">2</span>, &amp;boottime, &amp;size, <span class="literal">NULL</span>, <span class="number">0</span>) != -<span class="number">1</span> &amp;&amp; boottime.tv_sec != <span class="number">0</span>)
+    {
+        uptime = now.tv_sec - boottime.tv_sec;
+        uptime += (<span class="keyword">double</span>)(now.tv_usec - boottime.tv_usec) / <span class="number">1000000.0</span>;
+    }
+    <span class="keyword">return</span> uptime;
+}
+</code></pre>]]></content>
+    <summary type="html">
+    <![CDATA[<p>###概念<br>GMT（Greenwich Mean Time）格林尼治时间<br>UTC（Coordinated Universal Time ）原子钟标准时间<br>Unix time（以UTC 1970年1月1号 00：00：00为基准时间）</p>
+<hr>
+<p]]>
+    </summary>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[iOS Tips--NSDictionary和NSArray 快捷计算函数]]></title>
     <link href="http://yoursite.com/2017/07/30/iOS-Tips-NSDictionary-NSArray-%E5%BF%AB%E6%8D%B7%E8%AE%A1%E7%AE%97%E5%87%BD%E6%95%B0/"/>
     <id>http://yoursite.com/2017/07/30/iOS-Tips-NSDictionary-NSArray-快捷计算函数/</id>
     <published>2017-07-30T15:15:46.000Z</published>
-    <updated>2017-07-31T01:21:37.000Z</updated>
+    <updated>2017-07-31T01:40:56.000Z</updated>
     <content type="html"><![CDATA[<p>NSArray 有快捷的汇总公式，只要用 @函数.键路径 即可：</p>
 <pre><code><span class="title">NSArray</span> *array = [NSArray arrayWithObjects:@<span class="string">"1.0"</span>,@<span class="string">"2.0"</span>,nil];
 <span class="title">CGFloat</span> sum = [[array valueForKeyPath:@<span class="string">"<span class="variable">@sum</span>.floatValue"</span>] floatValue];
