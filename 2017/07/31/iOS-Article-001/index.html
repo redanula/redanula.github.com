@@ -37,31 +37,34 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="###概念GMT（Greenwich Mean Time）格林尼治时间UTC（Coordinated Universal Time ）原子钟标准时间Unix time（以UTC 1970年1月1号 00：00：00为基准时间）
+<meta name="description" content="概念GMT（Greenwich Mean Time）格林尼治时间UTC（Coordinated Universal Time ）原子钟标准时间Unix time（以UTC 1970年1月1号 00：00：00为基准时间）
 
-###sysctl APIiOS系统上次设备重启时间（iOS9后不能使用）
+sysctl APIiOS系统上次设备重启时间（iOS9后不能使用）
 #include &amp;lt;sys/sysctl.h&amp;gt;
 
-- (long)bootTime">
+- (long)bootTime
+{">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS本地时间与同步">
 <meta property="og:url" content="http://yoursite.com/2017/07/31/iOS-Article-001/index.html">
 <meta property="og:site_name" content="Redanula's Blog">
-<meta property="og:description" content="###概念GMT（Greenwich Mean Time）格林尼治时间UTC（Coordinated Universal Time ）原子钟标准时间Unix time（以UTC 1970年1月1号 00：00：00为基准时间）
+<meta property="og:description" content="概念GMT（Greenwich Mean Time）格林尼治时间UTC（Coordinated Universal Time ）原子钟标准时间Unix time（以UTC 1970年1月1号 00：00：00为基准时间）
 
-###sysctl APIiOS系统上次设备重启时间（iOS9后不能使用）
+sysctl APIiOS系统上次设备重启时间（iOS9后不能使用）
 #include &amp;lt;sys/sysctl.h&amp;gt;
 
-- (long)bootTime">
-<meta property="og:updated_time" content="2017-07-31T17:53:35.000Z">
+- (long)bootTime
+{">
+<meta property="og:updated_time" content="2017-07-31T17:58:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS本地时间与同步">
-<meta name="twitter:description" content="###概念GMT（Greenwich Mean Time）格林尼治时间UTC（Coordinated Universal Time ）原子钟标准时间Unix time（以UTC 1970年1月1号 00：00：00为基准时间）
+<meta name="twitter:description" content="概念GMT（Greenwich Mean Time）格林尼治时间UTC（Coordinated Universal Time ）原子钟标准时间Unix time（以UTC 1970年1月1号 00：00：00为基准时间）
 
-###sysctl APIiOS系统上次设备重启时间（iOS9后不能使用）
+sysctl APIiOS系统上次设备重启时间（iOS9后不能使用）
 #include &amp;lt;sys/sysctl.h&amp;gt;
 
-- (long)bootTime">
+- (long)bootTime
+{">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -244,9 +247,9 @@
       
 
       
-        <span itemprop="articleBody"><p>###概念<br>GMT（Greenwich Mean Time）格林尼治时间<br>UTC（Coordinated Universal Time ）原子钟标准时间<br>Unix time（以UTC 1970年1月1号 00：00：00为基准时间）</p>
+        <span itemprop="articleBody"><h3 id="概念">概念</h3><p>GMT（Greenwich Mean Time）格林尼治时间<br>UTC（Coordinated Universal Time ）原子钟标准时间<br>Unix time（以UTC 1970年1月1号 00：00：00为基准时间）</p>
 <hr>
-<p>###sysctl API<br>iOS系统上次设备重启时间（iOS9后不能使用）</p>
+<h3 id="sysctl_API">sysctl API</h3><p>iOS系统上次设备重启时间（iOS9后不能使用）</p>
 <pre><code><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;sys/sysctl.h&gt;</span></span>
 
 - (<span class="keyword">long</span>)bootTime
@@ -265,13 +268,11 @@
     }
     <span class="keyword">return</span> <span class="number">0</span>;
 }
-</code></pre><p>###时间校准</p>
-<p>#####</p>
-<p>1、记录上一次请求的时候获取服务器时间serverTime，与本地时间lastLocalTime</p>
+</code></pre><h3 id="时间校准">时间校准</h3><p>1、记录上一次请求的时候获取服务器时间serverTime，与本地时间lastLocalTime</p>
 <p>2、需要计算的时候取出curLocalTime（即NSDate），计算与lastLocalTime的偏移量T</p>
 <p>3、serverTime+T 就是当前的服务器时间</p>
-<p>#####另外，计算运行时长，计算自上一次重启后的运行时间<br>    //get system uptime since last boot</p>
-<pre><code>- (NSTimeInterval)uptime
+<h5 id="另外，计算运行时长，计算自上一次重启后的运行时间">另外，计算运行时长，计算自上一次重启后的运行时间</h5><pre><code><span class="comment">//get system uptime since last boot</span>
+- (NSTimeInterval)uptime
 {
     <span class="keyword">struct</span> timeval boottime;
     <span class="keyword">int</span> mib[<span class="number">2</span>] = {CTL_KERN, KERN_BOOTTIME};
@@ -449,7 +450,7 @@
           <div class="post-toc">
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sysctl_API"><span class="nav-number">2.</span> <span class="nav-text">sysctl API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间校准"><span class="nav-number">3.</span> <span class="nav-text">时间校准</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#另外，计算运行时长，计算自上一次重启后的运行时间"><span class="nav-number">3.0.1.</span> <span class="nav-text">另外，计算运行时长，计算自上一次重启后的运行时间</span></a></li></ol></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>

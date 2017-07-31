@@ -233,9 +233,9 @@
 
       
         
-          <span itemprop="articleBody"><p>###概念<br>GMT（Greenwich Mean Time）格林尼治时间<br>UTC（Coordinated Universal Time ）原子钟标准时间<br>Unix time（以UTC 1970年1月1号 00：00：00为基准时间）</p>
+          <span itemprop="articleBody"><h3 id="概念">概念</h3><p>GMT（Greenwich Mean Time）格林尼治时间<br>UTC（Coordinated Universal Time ）原子钟标准时间<br>Unix time（以UTC 1970年1月1号 00：00：00为基准时间）</p>
 <hr>
-<p>###sysctl API<br>iOS系统上次设备重启时间（iOS9后不能使用）</p>
+<h3 id="sysctl_API">sysctl API</h3><p>iOS系统上次设备重启时间（iOS9后不能使用）</p>
 <pre><code><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;sys/sysctl.h&gt;</span></span>
 
 - (<span class="keyword">long</span>)bootTime
@@ -254,13 +254,11 @@
     }
     <span class="keyword">return</span> <span class="number">0</span>;
 }
-</code></pre><p>###时间校准</p>
-<p>#####</p>
-<p>1、记录上一次请求的时候获取服务器时间serverTime，与本地时间lastLocalTime</p>
+</code></pre><h3 id="时间校准">时间校准</h3><p>1、记录上一次请求的时候获取服务器时间serverTime，与本地时间lastLocalTime</p>
 <p>2、需要计算的时候取出curLocalTime（即NSDate），计算与lastLocalTime的偏移量T</p>
 <p>3、serverTime+T 就是当前的服务器时间</p>
-<p>#####另外，计算运行时长，计算自上一次重启后的运行时间<br>    //get system uptime since last boot</p>
-<pre><code>- (NSTimeInterval)uptime
+<h5 id="另外，计算运行时长，计算自上一次重启后的运行时间">另外，计算运行时长，计算自上一次重启后的运行时间</h5><pre><code><span class="comment">//get system uptime since last boot</span>
+- (NSTimeInterval)uptime
 {
     <span class="keyword">struct</span> timeval boottime;
     <span class="keyword">int</span> mib[<span class="number">2</span>] = {CTL_KERN, KERN_BOOTTIME};
