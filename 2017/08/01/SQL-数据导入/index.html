@@ -26,7 +26,7 @@
 
 
 
-  <meta name="keywords" content="NEPacketTunnelProvider,Network Extension,iOS VPN," />
+  <meta name="keywords" content="SQL," />
 
 
 
@@ -37,16 +37,37 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="#####参考链接：1.iOS 9 Network Extension VPN API编程指南http://www.helusi.com/ios9-network-extension-vpn-api/2.分享开发 iOS 和 Mac 全新 VPN 的艰难历程https://www.v2ex.com/t/2644803.Potatso原理解析https://www.kidneyband.com/?p">
+<meta name="description" content="之前写API及处理后台数据的时候写了一些脚本，记录一下。
+快捷数据表操作的存储过程脚本。eg: exec ‘Z_InitData’,’目标表T1’,’源表T2’
+Create PROCEDURE Z_InitData
+    @tbname nvarchar(100),
+    @fromtbname nvarchar(100)
+AS
+BEGIN
+    -- SET NOCOUNT ON add">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS VPN开发">
-<meta property="og:url" content="http://yoursite.com/2017/03/01/iOS VPN开发/index.html">
+<meta property="og:title" content="SQL--数据导入">
+<meta property="og:url" content="http://yoursite.com/2017/08/01/SQL-数据导入/index.html">
 <meta property="og:site_name" content="Redanula's Blog">
-<meta property="og:description" content="#####参考链接：1.iOS 9 Network Extension VPN API编程指南http://www.helusi.com/ios9-network-extension-vpn-api/2.分享开发 iOS 和 Mac 全新 VPN 的艰难历程https://www.v2ex.com/t/2644803.Potatso原理解析https://www.kidneyband.com/?p">
-<meta property="og:updated_time" content="2017-03-23T03:46:35.000Z">
+<meta property="og:description" content="之前写API及处理后台数据的时候写了一些脚本，记录一下。
+快捷数据表操作的存储过程脚本。eg: exec ‘Z_InitData’,’目标表T1’,’源表T2’
+Create PROCEDURE Z_InitData
+    @tbname nvarchar(100),
+    @fromtbname nvarchar(100)
+AS
+BEGIN
+    -- SET NOCOUNT ON add">
+<meta property="og:updated_time" content="2017-08-01T06:52:50.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS VPN开发">
-<meta name="twitter:description" content="#####参考链接：1.iOS 9 Network Extension VPN API编程指南http://www.helusi.com/ios9-network-extension-vpn-api/2.分享开发 iOS 和 Mac 全新 VPN 的艰难历程https://www.v2ex.com/t/2644803.Potatso原理解析https://www.kidneyband.com/?p">
+<meta name="twitter:title" content="SQL--数据导入">
+<meta name="twitter:description" content="之前写API及处理后台数据的时候写了一些脚本，记录一下。
+快捷数据表操作的存储过程脚本。eg: exec ‘Z_InitData’,’目标表T1’,’源表T2’
+Create PROCEDURE Z_InitData
+    @tbname nvarchar(100),
+    @fromtbname nvarchar(100)
+AS
+BEGIN
+    -- SET NOCOUNT ON add">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -56,7 +77,7 @@
   };
 </script>
 
-  <title> iOS VPN开发 | Redanula's Blog </title>
+  <title> SQL--数据导入 | Redanula's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -194,7 +215,7 @@
           
           
             
-              iOS VPN开发
+              SQL--数据导入
             
           
         </h1>
@@ -203,8 +224,8 @@
       <div class="post-meta">
         <span class="post-time">
           发表于
-          <time itemprop="dateCreated" datetime="2017-03-01T11:27:43+08:00" content="2017-03-01">
-            2017-03-01
+          <time itemprop="dateCreated" datetime="2017-08-01T14:34:56+08:00" content="2017-08-01">
+            2017-08-01
           </time>
         </span>
 
@@ -214,8 +235,8 @@
           
             <span class="post-comments-count">
               &nbsp; | &nbsp;
-              <a href="/2017/03/01/iOS VPN开发/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/01/iOS VPN开发/" itemprop="commentsCount"></span>
+              <a href="/2017/08/01/SQL-数据导入/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count ds-thread-count" data-thread-key="2017/08/01/SQL-数据导入/" itemprop="commentsCount"></span>
               </a>
             </span>
           
@@ -229,9 +250,44 @@
       
 
       
-        <span itemprop="articleBody"><p>#####参考链接：<br>1.iOS 9 Network Extension VPN API编程指南<a href="http://www.helusi.com/ios9-network-extension-vpn-api/" target="_blank" rel="external">http://www.helusi.com/ios9-network-extension-vpn-api/</a><br>2.分享开发 iOS 和 Mac 全新 VPN 的艰难历程<a href="https://www.v2ex.com/t/264480" target="_blank" rel="external">https://www.v2ex.com/t/264480</a><br>3.Potatso原理解析<a href="https://www.kidneyband.com/?p=174" target="_blank" rel="external">https://www.kidneyband.com/?p=174</a></p>
-<p>#####苹果开发者文档：<br>NEPacketTunnelProvider<a href="https://developer.apple.com/reference/networkextension/nepackettunnelprovider?language=objc" target="_blank" rel="external">https://developer.apple.com/reference/networkextension/nepackettunnelprovider?language=objc</a><br>SimpleTunnel<a href="https://developer.apple.com/library/prerelease/content/samplecode/SimpleTunnel/Introduction/Intro.html" target="_blank" rel="external">https://developer.apple.com/library/prerelease/content/samplecode/SimpleTunnel/Introduction/Intro.html</a></p>
-</span>
+        <span itemprop="articleBody"><p>之前写API及处理后台数据的时候写了一些脚本，记录一下。</p>
+<p>快捷数据表操作的存储过程脚本。eg: exec ‘Z_InitData’,’目标表T1’,’源表T2’</p>
+<pre><code><span class="operator"><span class="keyword">Create</span> <span class="keyword">PROCEDURE</span> Z_InitData
+    @tbname <span class="keyword">nvarchar</span>(<span class="number">100</span>),
+    @fromtbname <span class="keyword">nvarchar</span>(<span class="number">100</span>)
+<span class="keyword">AS</span>
+<span class="keyword">BEGIN</span>
+    <span class="comment">-- SET NOCOUNT ON added to prevent extra result sets from</span>
+    <span class="comment">-- interfering with SELECT statements.</span>
+    <span class="keyword">SET</span> NOCOUNT <span class="keyword">ON</span>;</span>
+    <span class="operator"><span class="keyword">declare</span> @<span class="keyword">sql</span> <span class="keyword">nvarchar</span>(<span class="keyword">max</span>)
+    <span class="keyword">declare</span> @<span class="keyword">col</span> <span class="keyword">nvarchar</span>(<span class="keyword">max</span>)
+    <span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="string">'select @col = stuff((select '',''+name from syscolumns where id=object_id( '''</span>+ @tbname +<span class="string">''') order by name for xml path('''')),1,1,'''')'</span>  
+    exec sp_executesql @<span class="keyword">sql</span>,<span class="keyword">N</span><span class="string">'@col nvarchar(max) output'</span>,@<span class="keyword">col</span> <span class="keyword">output</span>
+    <span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="string">' truncate table '</span>+ @tbname +<span class="string">';'</span>
+    <span class="keyword">set</span> @<span class="keyword">sql</span> = @<span class="keyword">sql</span> + <span class="string">' set IDENTITY_INSERT '</span>+ @tbname +<span class="string">' on ;'</span>
+    <span class="keyword">set</span> @<span class="keyword">sql</span> = @<span class="keyword">sql</span> + <span class="string">' insert into '</span>+ @tbname + <span class="string">'('</span>+ @<span class="keyword">col</span> +<span class="string">') select '</span>+@<span class="keyword">col</span>+ <span class="string">' from '</span> + @fromtbname
+    <span class="keyword">set</span> @<span class="keyword">sql</span> = @<span class="keyword">sql</span> + <span class="string">'; set IDENTITY_INSERT '</span>+ @tbname +<span class="string">' off;'</span>
+    print(@<span class="keyword">sql</span>)
+    exec(@<span class="keyword">sql</span>)
+<span class="keyword">END</span></span>
+</code></pre><hr>
+<p>打印表字段，方便insert。eg: exec ‘Z_Print’,’目标表T1’</p>
+<pre><code><span class="operator"><span class="keyword">ALTER</span> <span class="keyword">PROCEDURE</span> Z_Print
+    @tbname <span class="keyword">nvarchar</span>(<span class="number">100</span>) =<span class="string">'TTT'</span>
+<span class="keyword">AS</span>
+<span class="keyword">BEGIN</span>
+    <span class="comment">-- SET NOCOUNT ON added to prevent extra result sets from</span>
+    <span class="comment">-- interfering with SELECT statements.</span>
+    <span class="keyword">SET</span> NOCOUNT <span class="keyword">ON</span>;</span>
+    <span class="operator"><span class="keyword">declare</span> @<span class="keyword">sql</span> <span class="keyword">nvarchar</span>(<span class="keyword">max</span>)
+    <span class="keyword">declare</span> @<span class="keyword">col</span> <span class="keyword">nvarchar</span>(<span class="keyword">max</span>)
+    <span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="string">'select @col = stuff((select '',''+name from syscolumns where id=object_id( '''</span>+ @tbname +<span class="string">''') order by name for xml path('''')),1,1,'''')'</span>  
+    exec sp_executesql @<span class="keyword">sql</span>,<span class="keyword">N</span><span class="string">'@col nvarchar(max) output'</span>,@<span class="keyword">col</span> <span class="keyword">output</span>
+    <span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="string">' insert into '</span>+ @tbname + <span class="string">'('</span>+ @<span class="keyword">col</span> +<span class="string">') '</span>
+    print(@<span class="keyword">sql</span>)
+<span class="keyword">END</span></span>
+</code></pre></span>
       
     </div>
 
@@ -239,11 +295,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/NEPacketTunnelProvider/" rel="tag">#NEPacketTunnelProvider</a>
-          
-            <a href="/tags/Network-Extension/" rel="tag">#Network Extension</a>
-          
-            <a href="/tags/iOS-VPN/" rel="tag">#iOS VPN</a>
+            <a href="/tags/SQL/" rel="tag">#SQL</a>
           
         </div>
       
@@ -252,13 +304,11 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/03/13/Python高德爬虫/" rel="prev">Python高德爬虫</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/11/26/UITableView-and-UIActivityIndicatorView/" rel="next">UITableView-and-UIActivityIndicatorView 同页面的设置</a>
+              <a href="/2017/07/31/iOS-Article-001/" rel="next">iOS本地时间与同步</a>
             
           </div>
         </div>
@@ -273,10 +323,10 @@
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2017/03/01/iOS VPN开发/"
-     data-title="iOS VPN开发"
+        <div class="ds-share flat" data-thread-key="2017/08/01/SQL-数据导入/"
+     data-title="SQL--数据导入"
      data-content=""
-     data-url="http://yoursite.com/2017/03/01/iOS VPN开发/">
+     data-url="http://yoursite.com/2017/08/01/SQL-数据导入/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -302,8 +352,8 @@
         
           <div class="comments" id="comments">
             
-              <div class="ds-thread" data-thread-key="2017/03/01/iOS VPN开发/"
-                   data-title="iOS VPN开发" data-url="http://yoursite.com/2017/03/01/iOS VPN开发/">
+              <div class="ds-thread" data-thread-key="2017/08/01/SQL-数据导入/"
+                   data-title="SQL--数据导入" data-url="http://yoursite.com/2017/08/01/SQL-数据导入/">
               </div>
             
           </div>

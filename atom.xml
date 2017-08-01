@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2017-08-01T01:55:24.000Z</updated>
+  <updated>2017-08-01T06:52:50.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -13,6 +13,60 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[SQL--数据导入]]></title>
+    <link href="http://yoursite.com/2017/08/01/SQL-%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5/"/>
+    <id>http://yoursite.com/2017/08/01/SQL-数据导入/</id>
+    <published>2017-08-01T06:34:56.000Z</published>
+    <updated>2017-08-01T06:52:50.000Z</updated>
+    <content type="html"><![CDATA[<p>之前写API及处理后台数据的时候写了一些脚本，记录一下。</p>
+<p>快捷数据表操作的存储过程脚本。eg: exec ‘Z_InitData’,’目标表T1’,’源表T2’</p>
+<pre><code><span class="operator"><span class="keyword">Create</span> <span class="keyword">PROCEDURE</span> Z_InitData
+    @tbname <span class="keyword">nvarchar</span>(<span class="number">100</span>),
+    @fromtbname <span class="keyword">nvarchar</span>(<span class="number">100</span>)
+<span class="keyword">AS</span>
+<span class="keyword">BEGIN</span>
+    <span class="comment">-- SET NOCOUNT ON added to prevent extra result sets from</span>
+    <span class="comment">-- interfering with SELECT statements.</span>
+    <span class="keyword">SET</span> NOCOUNT <span class="keyword">ON</span>;</span>
+    <span class="operator"><span class="keyword">declare</span> @<span class="keyword">sql</span> <span class="keyword">nvarchar</span>(<span class="keyword">max</span>)
+    <span class="keyword">declare</span> @<span class="keyword">col</span> <span class="keyword">nvarchar</span>(<span class="keyword">max</span>)
+    <span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="string">'select @col = stuff((select '',''+name from syscolumns where id=object_id( '''</span>+ @tbname +<span class="string">''') order by name for xml path('''')),1,1,'''')'</span>  
+    exec sp_executesql @<span class="keyword">sql</span>,<span class="keyword">N</span><span class="string">'@col nvarchar(max) output'</span>,@<span class="keyword">col</span> <span class="keyword">output</span>
+    <span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="string">' truncate table '</span>+ @tbname +<span class="string">';'</span>
+    <span class="keyword">set</span> @<span class="keyword">sql</span> = @<span class="keyword">sql</span> + <span class="string">' set IDENTITY_INSERT '</span>+ @tbname +<span class="string">' on ;'</span>
+    <span class="keyword">set</span> @<span class="keyword">sql</span> = @<span class="keyword">sql</span> + <span class="string">' insert into '</span>+ @tbname + <span class="string">'('</span>+ @<span class="keyword">col</span> +<span class="string">') select '</span>+@<span class="keyword">col</span>+ <span class="string">' from '</span> + @fromtbname
+    <span class="keyword">set</span> @<span class="keyword">sql</span> = @<span class="keyword">sql</span> + <span class="string">'; set IDENTITY_INSERT '</span>+ @tbname +<span class="string">' off;'</span>
+    print(@<span class="keyword">sql</span>)
+    exec(@<span class="keyword">sql</span>)
+<span class="keyword">END</span></span>
+</code></pre><hr>
+<p>打印表字段，方便insert。eg: exec ‘Z_Print’,’目标表T1’</p>
+<pre><code><span class="operator"><span class="keyword">ALTER</span> <span class="keyword">PROCEDURE</span> Z_Print
+    @tbname <span class="keyword">nvarchar</span>(<span class="number">100</span>) =<span class="string">'TTT'</span>
+<span class="keyword">AS</span>
+<span class="keyword">BEGIN</span>
+    <span class="comment">-- SET NOCOUNT ON added to prevent extra result sets from</span>
+    <span class="comment">-- interfering with SELECT statements.</span>
+    <span class="keyword">SET</span> NOCOUNT <span class="keyword">ON</span>;</span>
+    <span class="operator"><span class="keyword">declare</span> @<span class="keyword">sql</span> <span class="keyword">nvarchar</span>(<span class="keyword">max</span>)
+    <span class="keyword">declare</span> @<span class="keyword">col</span> <span class="keyword">nvarchar</span>(<span class="keyword">max</span>)
+    <span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="string">'select @col = stuff((select '',''+name from syscolumns where id=object_id( '''</span>+ @tbname +<span class="string">''') order by name for xml path('''')),1,1,'''')'</span>  
+    exec sp_executesql @<span class="keyword">sql</span>,<span class="keyword">N</span><span class="string">'@col nvarchar(max) output'</span>,@<span class="keyword">col</span> <span class="keyword">output</span>
+    <span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="string">' insert into '</span>+ @tbname + <span class="string">'('</span>+ @<span class="keyword">col</span> +<span class="string">') '</span>
+    print(@<span class="keyword">sql</span>)
+<span class="keyword">END</span></span>
+</code></pre>]]></content>
+    <summary type="html">
+    <![CDATA[<p>之前写API及处理后台数据的时候写了一些脚本，记录一下。</p>
+<p>快捷数据表操作的存储过程脚本。eg: exec ‘Z_InitData’,’目标表T1’,’源表T2’</p>
+<pre><code><span class="operator"><span class]]>
+    </summary>
+    
+      <category term="SQL" scheme="http://yoursite.com/tags/SQL/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[iOS本地时间与同步]]></title>
