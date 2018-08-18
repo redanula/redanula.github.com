@@ -754,7 +754,7 @@
         url_page=<span class="string">u"http://gz.lianjia.com/ershoufang/pg%drs%s/"</span> % (i+<span class="number">1</span>,area)
         onsell_spider(mydb,url_page,area)
 </code></pre><p>对BeautifulSoup的方法还不太熟悉，用的都是简单粗暴的方法，后续再去细看了。</p>
-<p>爬下来的数据：<br>    <img src="/2017/03/21/Python链家爬虫/imgdata.png" alt="imgdata"></p>
+<p>爬下来的数据：<br>    <img src="images/imgdata.png" alt="imgdata"></p>
 </span>
         
       
@@ -954,7 +954,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
     app.processEvents()
 </code></pre><p>另外UI使用的是PyQt5，PyQt的UI从运行到打包一堆坑要踩，不过很多问题都可以搜到解决方案。UI部分做了个输入框，输入城市以后可以从本地sqlite查询对应该城市区域的全部编码，然后赋值到wherestr上，开始爬取数据并输出到QTextEdit。</p>
 <p>总的来说，高德地图API对爬虫很友好，企业认证的调用次数上限都很高，只是貌似每次调用最多就只能返回1000条数据，如果说POI分类多，最好分别进行遍历抓取。这个爬虫都是用到很基础的库，后续有时间继续研究~</p>
-<p>效果截图：<br>    <img src="/2017/03/13/Python高德爬虫/imgui.png" alt="imgui"></p>
+<p>效果截图：<br>    <img src="/images/imgui.png" alt="imgui"></p>
 </span>
         
       
