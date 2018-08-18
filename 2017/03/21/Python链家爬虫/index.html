@@ -37,20 +37,20 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="业余时间做了个链家的爬虫，爬取数据写入sqlite，方便浏览和对比。具体参考了冰蓝大牛的博客http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;amp;utm_medium=referral, 根据链家最新的web样式做了修改（2017-03）爬在售的二手房的数据。
-链家对短时间内同一个IP的流量有监控，">
+<meta name="description" content="业余时间做了个链家的爬虫，爬取数据写入sqlite，方便浏览和对比。具体参考了冰蓝大牛的博客http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;amp;utm_medium=referral, 根据链家最新的web样式做了修改（2017-03）爬在售的二手房的数据。 链家对短时间内同一个IP的流量有监控，">
+<meta name="keywords" content="Python,Python爬虫,链家">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python链家爬虫">
 <meta property="og:url" content="http://yoursite.com/2017/03/21/Python链家爬虫/index.html">
-<meta property="og:site_name" content="Redanula's Blog">
-<meta property="og:description" content="业余时间做了个链家的爬虫，爬取数据写入sqlite，方便浏览和对比。具体参考了冰蓝大牛的博客http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;amp;utm_medium=referral, 根据链家最新的web样式做了修改（2017-03）爬在售的二手房的数据。
-链家对短时间内同一个IP的流量有监控，">
+<meta property="og:site_name" content="Redanula&#39;s Blog">
+<meta property="og:description" content="业余时间做了个链家的爬虫，爬取数据写入sqlite，方便浏览和对比。具体参考了冰蓝大牛的博客http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;amp;utm_medium=referral, 根据链家最新的web样式做了修改（2017-03）爬在售的二手房的数据。 链家对短时间内同一个IP的流量有监控，">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2017/03/21/Python链家爬虫/imgdata.png">
 <meta property="og:updated_time" content="2017-03-21T03:37:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python链家爬虫">
-<meta name="twitter:description" content="业余时间做了个链家的爬虫，爬取数据写入sqlite，方便浏览和对比。具体参考了冰蓝大牛的博客http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;amp;utm_medium=referral, 根据链家最新的web样式做了修改（2017-03）爬在售的二手房的数据。
-链家对短时间内同一个IP的流量有监控，">
+<meta name="twitter:description" content="业余时间做了个链家的爬虫，爬取数据写入sqlite，方便浏览和对比。具体参考了冰蓝大牛的博客http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;amp;utm_medium=referral, 根据链家最新的web样式做了修改（2017-03）爬在售的二手房的数据。 链家对短时间内同一个IP的流量有监控，">
+<meta name="twitter:image" content="http://yoursite.com/2017/03/21/Python链家爬虫/imgdata.png">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -233,7 +233,7 @@
       
 
       
-        <span itemprop="articleBody"><p>业余时间做了个链家的爬虫，爬取数据写入sqlite，方便浏览和对比。<br>具体参考了冰蓝大牛的博客<a href="http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;utm_medium=referral</a>, 根据链家最新的web样式做了修改（2017-03）爬在售的二手房的数据。</p>
+        <span itemprop="articleBody"><p>业余时间做了个链家的爬虫，爬取数据写入sqlite，方便浏览和对比。<br>具体参考了冰蓝大牛的博客<a href="http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="noopener">http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;utm_medium=referral</a>, 根据链家最新的web样式做了修改（2017-03）爬在售的二手房的数据。</p>
 <p>链家对短时间内同一个IP的流量有监控，所以如果用多线程去爬，太快可能会被要求输入验证码。试了以下用代理ip池去爬，因为可用的免费代理ip不多也不稳定，就放弃了。后面想数据爬的也不多，就加个延时模拟人为慢慢爬了，另外还有个问题可能是单位时间内Request太快可能解析不到数据，就把延时放在BeautifulSoup解析后面，并加了如果没有数据则重复5次请求的验证过程，才成功抓全数据：</p>
 <pre><code><span class="tag">time</span>.<span class="function"><span class="title">sleep</span><span class="params">(np.random.rand()</span></span>*<span class="number">3</span>+<span class="number">3</span>)
 </code></pre><p>这里贴出关键的匹配代码，代码好粗糙，仅供发参考：）</p>
@@ -489,7 +489,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-count">12</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -503,7 +503,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-count">17</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
@@ -565,7 +565,7 @@
       <div class="footer-inner"> <div class="copyright" >
   
   &copy; &nbsp; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="icon-next-heart"></i>
   </span>

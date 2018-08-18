@@ -26,7 +26,7 @@
 
 
 
-  <meta name="keywords" content="KVC,iOS," />
+  <meta name="keywords" content="iOS,KVC," />
 
 
 
@@ -37,25 +37,18 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="NSArray 有快捷的汇总公式，只要用 @函数.键路径 即可：
-NSArray *array = [NSArray arrayWithObjects:@&quot;1.0&quot;,@&quot;2.0&quot;,nil];
-CGFloat sum = [[array valueForKeyPath:@&quot;@sum.floatValue&quot;] floatValue];
-CGFloat avg = [[array valueForKey">
+<meta name="description" content="NSArray 有快捷的汇总公式，只要用 @函数.键路径 即可： NSArray *array = [NSArray arrayWithObjects:@&quot;1.0&quot;,@&quot;2.0&quot;,nil]; CGFloat sum = [[array valueForKeyPath:@&quot;@sum.floatValue&quot;] floatValue]; CGFloat avg = [[array valueForKey">
+<meta name="keywords" content="iOS,KVC">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS Tips--NSDictionary和NSArray 快捷计算函数">
 <meta property="og:url" content="http://yoursite.com/2017/07/30/iOS-Tips-NSDictionary-NSArray-快捷计算函数/index.html">
-<meta property="og:site_name" content="Redanula's Blog">
-<meta property="og:description" content="NSArray 有快捷的汇总公式，只要用 @函数.键路径 即可：
-NSArray *array = [NSArray arrayWithObjects:@&quot;1.0&quot;,@&quot;2.0&quot;,nil];
-CGFloat sum = [[array valueForKeyPath:@&quot;@sum.floatValue&quot;] floatValue];
-CGFloat avg = [[array valueForKey">
+<meta property="og:site_name" content="Redanula&#39;s Blog">
+<meta property="og:description" content="NSArray 有快捷的汇总公式，只要用 @函数.键路径 即可： NSArray *array = [NSArray arrayWithObjects:@&quot;1.0&quot;,@&quot;2.0&quot;,nil]; CGFloat sum = [[array valueForKeyPath:@&quot;@sum.floatValue&quot;] floatValue]; CGFloat avg = [[array valueForKey">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-07-31T01:40:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS Tips--NSDictionary和NSArray 快捷计算函数">
-<meta name="twitter:description" content="NSArray 有快捷的汇总公式，只要用 @函数.键路径 即可：
-NSArray *array = [NSArray arrayWithObjects:@&quot;1.0&quot;,@&quot;2.0&quot;,nil];
-CGFloat sum = [[array valueForKeyPath:@&quot;@sum.floatValue&quot;] floatValue];
-CGFloat avg = [[array valueForKey">
+<meta name="twitter:description" content="NSArray 有快捷的汇总公式，只要用 @函数.键路径 即可： NSArray *array = [NSArray arrayWithObjects:@&quot;1.0&quot;,@&quot;2.0&quot;,nil]; CGFloat sum = [[array valueForKeyPath:@&quot;@sum.floatValue&quot;] floatValue]; CGFloat avg = [[array valueForKey">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -248,7 +241,7 @@ CGFloat avg = [[array valueForKey">
 <pre><code><span class="name">NSArray</span> *<span class="atom">dic</span> = [{@<span class="string">"KeyName1"</span>:@<span class="string">"1.0"</span>,@<span class="string">"KeyName2"</span>:@<span class="string">"abc"</span>},{@<span class="string">"KeyName1"</span>:@<span class="string">"2.0"</span>,@<span class="string">"KeyName2"</span>:@<span class="string">"bcd"</span>}]; 
 <span class="name">CGFloat</span> <span class="atom">sum</span> = [[[<span class="atom">dic</span> <span class="atom">valueForKeyPath</span>:@<span class="string">"KeyName1"</span>] <span class="atom">valueForKeyPath</span>:@<span class="string">"@sum.floatValue"</span>] <span class="atom">floatValue</span>];
 <span class="name">CGFloat</span> <span class="atom">max</span> = [[[<span class="atom">dic</span> <span class="atom">valueForKeyPath</span>:@<span class="string">"KeyName1"</span>] <span class="atom">valueForKeyPath</span>:@<span class="string">"@max.floatValue"</span>] <span class="atom">floatValue</span>];
-</code></pre><p>以上快捷汇总实际是KVC的用法，更多KVC的用法参考<br>1.<a href="http://www.jianshu.com/p/b7dda8d49dc4" target="_blank" rel="external">http://www.jianshu.com/p/b7dda8d49dc4</a><br>2.<a href="https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/KeyValueCoding.html" target="_blank" rel="external">https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/KeyValueCoding.html</a></p>
+</code></pre><p>以上快捷汇总实际是KVC的用法，更多KVC的用法参考<br>1.<a href="http://www.jianshu.com/p/b7dda8d49dc4" target="_blank" rel="noopener">http://www.jianshu.com/p/b7dda8d49dc4</a><br>2.<a href="https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/KeyValueCoding.html" target="_blank" rel="noopener">https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/KeyValueCoding.html</a></p>
 </span>
       
     </div>
@@ -257,9 +250,9 @@ CGFloat avg = [[array valueForKey">
       
         <div class="post-tags">
           
-            <a href="/tags/KVC/" rel="tag">#KVC</a>
-          
             <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/KVC/" rel="tag">#KVC</a>
           
         </div>
       
@@ -359,7 +352,7 @@ CGFloat avg = [[array valueForKey">
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-count">12</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -373,7 +366,7 @@ CGFloat avg = [[array valueForKey">
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-count">17</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
@@ -435,7 +428,7 @@ CGFloat avg = [[array valueForKey">
       <div class="footer-inner"> <div class="copyright" >
   
   &copy; &nbsp; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="icon-next-heart"></i>
   </span>
