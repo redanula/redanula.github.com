@@ -26,7 +26,7 @@
 
 
 
-  <meta name="keywords" content="iOS VPN,Network Extension,NEPacketTunnelProvider," />
+  <meta name="keywords" content="腾讯云,Objective-C SHA1,人脸识别,鉴权," />
 
 
 
@@ -37,18 +37,18 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="#####参考链接：1.iOS 9 Network Extension VPN API编程指南http://www.helusi.com/ios9-network-extension-vpn-api/2.分享开发 iOS 和 Mac 全新 VPN 的艰难历程https://www.v2ex.com/t/2644803.Potatso原理解析https://www.kidneyband.com/?p">
-<meta name="keywords" content="iOS VPN,Network Extension,NEPacketTunnelProvider">
+<meta name="description" content="前言工作需要做了一个简易的、通过API第三方人脸识别、人脸对比分析的App Demo，对比了一下各家提供的服务、SDK，最后选择了腾讯云的智能图像服务。调用API的流程为： 1.鉴权签名  2.调用人脸识别、人脸对比等API。 这里主要在iOS上模拟生成鉴权签名识别的流程，实际生产环境应该是服务器生成鉴权签名，APP调用接口识别。 鉴权签名云端开通服务后的Key： #define kAPPID @">
+<meta name="keywords" content="腾讯云,Objective-C SHA1,人脸识别,鉴权">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS VPN开发">
-<meta property="og:url" content="http://yoursite.com/2017/03/01/iOS VPN开发/index.html">
+<meta property="og:title" content="iOS腾讯云人脸识别">
+<meta property="og:url" content="http://yoursite.com/2018/08/08/tencentcloudservice/index.html">
 <meta property="og:site_name" content="Redanula&#39;s Blog">
-<meta property="og:description" content="#####参考链接：1.iOS 9 Network Extension VPN API编程指南http://www.helusi.com/ios9-network-extension-vpn-api/2.分享开发 iOS 和 Mac 全新 VPN 的艰难历程https://www.v2ex.com/t/2644803.Potatso原理解析https://www.kidneyband.com/?p">
+<meta property="og:description" content="前言工作需要做了一个简易的、通过API第三方人脸识别、人脸对比分析的App Demo，对比了一下各家提供的服务、SDK，最后选择了腾讯云的智能图像服务。调用API的流程为： 1.鉴权签名  2.调用人脸识别、人脸对比等API。 这里主要在iOS上模拟生成鉴权签名识别的流程，实际生产环境应该是服务器生成鉴权签名，APP调用接口识别。 鉴权签名云端开通服务后的Key： #define kAPPID @">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-03-23T03:46:35.000Z">
+<meta property="og:updated_time" content="2018-08-19T10:21:22.202Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS VPN开发">
-<meta name="twitter:description" content="#####参考链接：1.iOS 9 Network Extension VPN API编程指南http://www.helusi.com/ios9-network-extension-vpn-api/2.分享开发 iOS 和 Mac 全新 VPN 的艰难历程https://www.v2ex.com/t/2644803.Potatso原理解析https://www.kidneyband.com/?p">
+<meta name="twitter:title" content="iOS腾讯云人脸识别">
+<meta name="twitter:description" content="前言工作需要做了一个简易的、通过API第三方人脸识别、人脸对比分析的App Demo，对比了一下各家提供的服务、SDK，最后选择了腾讯云的智能图像服务。调用API的流程为： 1.鉴权签名  2.调用人脸识别、人脸对比等API。 这里主要在iOS上模拟生成鉴权签名识别的流程，实际生产环境应该是服务器生成鉴权签名，APP调用接口识别。 鉴权签名云端开通服务后的Key： #define kAPPID @">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -58,7 +58,7 @@
   };
 </script>
 
-  <title> iOS VPN开发 | Redanula's Blog </title>
+  <title> iOS腾讯云人脸识别 | Redanula's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -196,7 +196,7 @@
           
           
             
-              iOS VPN开发
+              iOS腾讯云人脸识别
             
           
         </h1>
@@ -205,8 +205,8 @@
       <div class="post-meta">
         <span class="post-time">
           发表于
-          <time itemprop="dateCreated" datetime="2017-03-01T11:27:43+08:00" content="2017-03-01">
-            2017-03-01
+          <time itemprop="dateCreated" datetime="2018-08-08T22:12:15+08:00" content="2018-08-08">
+            2018-08-08
           </time>
         </span>
 
@@ -216,8 +216,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2017/03/01/iOS VPN开发/#comments" itemprop="discussionUrl">
-              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/01/iOS VPN开发/" itemprop="commentsCount"></span>
+            <a href="/2018/08/08/tencentcloudservice/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/08/08/tencentcloudservice/" itemprop="commentsCount"></span>
             </a>
           </span>
           
@@ -231,8 +231,75 @@
       
 
       
-        <span itemprop="articleBody"><p>#####参考链接：<br>1.iOS 9 Network Extension VPN API编程指南<a href="http://www.helusi.com/ios9-network-extension-vpn-api/" target="_blank" rel="noopener">http://www.helusi.com/ios9-network-extension-vpn-api/</a><br>2.分享开发 iOS 和 Mac 全新 VPN 的艰难历程<a href="https://www.v2ex.com/t/264480" target="_blank" rel="noopener">https://www.v2ex.com/t/264480</a><br>3.Potatso原理解析<a href="https://www.kidneyband.com/?p=174" target="_blank" rel="noopener">https://www.kidneyband.com/?p=174</a></p>
-<p>#####苹果开发者文档：<br>NEPacketTunnelProvider<a href="https://developer.apple.com/reference/networkextension/nepackettunnelprovider?language=objc" target="_blank" rel="noopener">https://developer.apple.com/reference/networkextension/nepackettunnelprovider?language=objc</a><br>SimpleTunnel<a href="https://developer.apple.com/library/prerelease/content/samplecode/SimpleTunnel/Introduction/Intro.html" target="_blank" rel="noopener">https://developer.apple.com/library/prerelease/content/samplecode/SimpleTunnel/Introduction/Intro.html</a></p>
+        <span itemprop="articleBody"><h3 id="前言">前言</h3><p>工作需要做了一个简易的、通过API第三方人脸识别、人脸对比分析的App Demo，对比了一下各家提供的服务、SDK，最后选择了腾讯云的智能图像服务。<br>调用API的流程为：</p>
+<pre><code><span class="number">1.</span>鉴权签名 
+<span class="number">2.</span>调用人脸识别、人脸对比等API。
+</code></pre><p>这里主要在iOS上模拟生成鉴权签名识别的流程，实际生产环境应该是服务器生成鉴权签名，APP调用接口识别。</p>
+<h3 id="鉴权签名">鉴权签名</h3><p>云端开通服务后的Key：</p>
+<pre><code><span class="hexcolor">#def</span>ine kAPPID @<span class="string">"your APPID"</span>
+<span class="hexcolor">#def</span>ine kSecretId @<span class="string">"your SecretId"</span>
+<span class="hexcolor">#def</span>ine kSecretKey @<span class="string">"your SecretKey"</span>
+</code></pre><p>拼接签名串：</p>
+<pre><code>- (<span class="built_in">NSString</span> *)getSign{
+
+    <span class="built_in">NSDate</span>* date = [<span class="built_in">NSDate</span> dateWithTimeIntervalSinceNow:<span class="number">0</span>];<span class="comment">//获取当前时间0秒后的时间</span>
+    <span class="built_in">NSDate</span>* edate = [<span class="built_in">NSDate</span> dateWithTimeIntervalSinceNow:<span class="number">60</span>*<span class="number">60</span>*<span class="number">24</span>*<span class="number">30</span>];<span class="comment">//一个月</span>
+    <span class="built_in">NSTimeInterval</span> time=[date timeIntervalSince1970];<span class="comment">// *1000 是精确到毫秒，不乘就是精确到秒</span>
+    <span class="built_in">NSTimeInterval</span> etime=[edate timeIntervalSince1970];<span class="comment">// *1000 是精确到毫秒，不乘就是精确到秒</span>
+    <span class="built_in">NSString</span> *timeString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%.0f"</span>, time];
+    <span class="built_in">NSString</span> *etimeString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%.0f"</span>, etime];
+    <span class="keyword">int</span> ranInt = arc4random() %<span class="number">100000</span>;
+    <span class="built_in">NSString</span> *ranString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%d"</span>, ranInt];
+    <span class="built_in">NSString</span> *abketr = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"a=%@&amp;b=%@&amp;k=%@&amp;e=%@&amp;t=%@&amp;r=%@"</span>,
+                        kAPPID,
+                        <span class="string">@"tencentyun"</span>,
+                        kSecretId,
+                        etimeString,
+                        timeString,
+                        ranString
+                        ];
+    <span class="built_in">NSString</span> *signString = [<span class="keyword">self</span> HmacSha1:kSecretKey data:abketr];
+
+    <span class="keyword">return</span> signString;
+}
+</code></pre><p>HMAC-SHA1 算法加密，注意最后需要拼接签名串到NSMutableData末尾：</p>
+<pre><code><span class="comment">//HmacSHA1加密；</span>
+- (<span class="built_in">NSString</span> *)HmacSha1:(<span class="built_in">NSString</span> *)key data:(<span class="built_in">NSString</span> *)data
+{
+    <span class="keyword">const</span> <span class="keyword">char</span> *cKey  = [key cStringUsingEncoding:<span class="built_in">NSASCIIStringEncoding</span>];
+    <span class="keyword">const</span> <span class="keyword">char</span> *cData = [data cStringUsingEncoding:<span class="built_in">NSASCIIStringEncoding</span>];
+
+    <span class="keyword">unsigned</span> <span class="keyword">char</span> cHMAC[CC_SHA1_DIGEST_LENGTH];
+    CCHmac(kCCHmacAlgSHA1, cKey, strlen(cKey), cData, strlen(cData), cHMAC);
+
+    <span class="built_in">NSData</span> *HMAC = [[<span class="built_in">NSData</span> alloc] initWithBytes:cHMAC length:<span class="keyword">sizeof</span>(cHMAC)];
+    <span class="built_in">NSData</span> *dData = [[<span class="built_in">NSData</span> alloc] initWithBytes:cData length:strlen(cData)];
+
+    <span class="built_in">NSMutableData</span> *mData = [[<span class="built_in">NSMutableData</span> alloc] init];
+
+    [mData appendData:HMAC];
+    [mData appendData:dData];
+
+    <span class="built_in">NSString</span> *hash = [mData base64EncodedStringWithOptions:<span class="number">0</span>];<span class="comment">//将加密结果进行一次BASE64编码。</span>
+    <span class="keyword">return</span> hash;
+}
+</code></pre><p>如果是SHA256，可以：</p>
+<pre><code>unsigned <span class="value">char</span> cHMAC<span class="attr_selector">[CC_SHA256_DIGEST_LENGTH]</span>;
+<span class="function">CCHmac</span>(kCCHmacAlgSHA256, cKey, <span class="function">strlen</span>(cKey), cData, <span class="function">strlen</span>(cData), cHMAC);
+</code></pre><h3 id="人脸检测">人脸检测</h3><p>通过生成的签名添加到请求头authorization里面，请求如下：</p>
+<pre><code>NSString *apiString = [NSString <span class="string">stringWithFormat:</span>@<span class="string">"%@%@"</span>,@<span class="string">"https://recognition.image.myqcloud.com"</span>,@<span class="string">"/face/detect"</span>];
+AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+[manager <span class="string">setRequestSerializer:</span>[AFHTTPRequestSerializer serializer]];
+[manager.requestSerializer <span class="string">setValue:</span>@<span class="string">"recognition.image.myqcloud.com"</span> <span class="string">forHTTPHeaderField:</span>@<span class="string">"host"</span>];
+[manager.requestSerializer <span class="string">setValue:</span>[self getSign] <span class="string">forHTTPHeaderField:</span>@<span class="string">"authorization"</span>];
+[manager <span class="string">POST:</span>apiString <span class="string">parameters:</span>params <span class="string">constructingBodyWithBlock:</span>^(id&lt;AFMultipartFormData&gt;  _Nonnull formData) {
+    [formData <span class="string">appendPartWithFileData:</span>imageData <span class="string">name:</span>@<span class="string">"image"</span> <span class="string">fileName:</span>@<span class="string">"image.jpg"</span> <span class="string">mimeType:</span>@<span class="string">"image/jpg"</span>];
+} <span class="string">progress:</span>nil <span class="string">success:</span>^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    block(responseObject);
+} <span class="string">failure:</span>^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    block(nil);
+}];
+</code></pre><p>其他接口可以查看：<br><a href="https://cloud.tencent.com/document/product/867/17719" target="_blank" rel="noopener">1.腾讯云鉴权签名</a><br><a href="https://cloud.tencent.com/document/product/867/17588" target="_blank" rel="noopener">2.人脸识别接口文档</a></p>
 </span>
       
     </div>
@@ -241,11 +308,13 @@
       
         <div class="post-tags">
           
-            <a href="/tags/iOS-VPN/" rel="tag">#iOS VPN</a>
+            <a href="/tags/腾讯云/" rel="tag">#腾讯云</a>
           
-            <a href="/tags/Network-Extension/" rel="tag">#Network Extension</a>
+            <a href="/tags/Objective-C-SHA1/" rel="tag">#Objective-C SHA1</a>
           
-            <a href="/tags/NEPacketTunnelProvider/" rel="tag">#NEPacketTunnelProvider</a>
+            <a href="/tags/人脸识别/" rel="tag">#人脸识别</a>
+          
+            <a href="/tags/鉴权/" rel="tag">#鉴权</a>
           
         </div>
       
@@ -254,13 +323,11 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/03/13/Python高德爬虫/" rel="prev">Python高德爬虫</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/11/26/UITableView-and-UIActivityIndicatorView/" rel="next">UITableView-and-UIActivityIndicatorView 同页面的设置</a>
+              <a href="/2018/08/01/http-headers/" rel="next">.Net Core 添加 HTTP Headers</a>
             
           </div>
         </div>
@@ -385,7 +452,7 @@
           <div class="post-toc">
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#鉴权签名"><span class="nav-number">2.</span> <span class="nav-text">鉴权签名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#人脸检测"><span class="nav-number">3.</span> <span class="nav-text">人脸检测</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
@@ -439,9 +506,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'redanula';
-      var disqus_identifier = '2017/03/01/iOS VPN开发/';
-      var disqus_title = 'iOS VPN开发';
-      var disqus_url = 'http://yoursite.com/2017/03/01/iOS VPN开发/';
+      var disqus_identifier = '2018/08/08/tencentcloudservice/';
+      var disqus_title = 'iOS腾讯云人脸识别';
+      var disqus_url = 'http://yoursite.com/2018/08/08/tencentcloudservice/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
