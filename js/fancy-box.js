@@ -1,0 +1,1 @@
+$(document).ready(function(){$(".content img").each(function(){var t=$(this),a=t.parent("a");a.size()<1&&(a=t.wrap('<a href="'+this.getAttribute("src")+'"></a>').parent("a")),a.addClass("fancybox"),this.title&&a.attr("title",this.title)})}),$(".fancybox").fancybox({helpers:{overlay:{locked:!1}}});

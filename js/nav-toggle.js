@@ -1,0 +1,1 @@
+$(document).ready(function(){$(".site-nav-toggle button").on("click",function(){var n=$(".site-nav"),s="site-nav-on",t=n.hasClass(s),a=t?"slideUp":"slideDown",o=t?"removeClass":"addClass";n.stop()[a]("fast",function(){n[o](s)})})});
