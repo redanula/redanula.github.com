@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2018-08-21T10:02:08.953Z</updated>
+  <updated>2018-08-21T10:09:57.133Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,24 +15,93 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title><![CDATA[Hello World]]></title>
-    <link href="http://yoursite.com/2018/08/21/hello-world/"/>
-    <id>http://yoursite.com/2018/08/21/hello-world/</id>
-    <published>2018-08-21T10:02:08.953Z</published>
-    <updated>2018-08-21T10:02:08.953Z</updated>
-    <content type="html"><![CDATA[<p>Test: Welcome to <a href="http://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick_Start">Quick Start</h2><h3 id="Create_a_new_post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run_server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate_static_files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+    <title><![CDATA[iOS腾讯云人脸识别]]></title>
+    <link href="http://yoursite.com/2018/08/08/tencentcloudservice/"/>
+    <id>http://yoursite.com/2018/08/08/tencentcloudservice/</id>
+    <published>2018-08-08T14:12:15.000Z</published>
+    <updated>2018-08-21T10:09:57.133Z</updated>
+    <content type="html"><![CDATA[<h3 id="前言">前言</h3><p>工作需要做了一个简易的、通过API第三方人脸识别、人脸对比分析的App Demo，对比了一下各家提供的服务、SDK，最后选择了腾讯云的智能图像服务。<br>调用API的流程为：</p>
+<pre><code><span class="number">1.</span>鉴权签名 
+<span class="number">2.</span>调用人脸识别、人脸对比等API。
+</code></pre><p>这里主要在iOS上模拟生成鉴权签名识别的流程，实际生产环境应该是服务器生成鉴权签名，APP调用接口识别。</p>
+<h3 id="鉴权签名">鉴权签名</h3><p>云端开通服务后的Key：</p>
+<pre><code><span class="hexcolor">#def</span>ine kAPPID @<span class="string">"your APPID"</span>
+<span class="hexcolor">#def</span>ine kSecretId @<span class="string">"your SecretId"</span>
+<span class="hexcolor">#def</span>ine kSecretKey @<span class="string">"your SecretKey"</span>
+</code></pre><p>拼接签名串：</p>
+<pre><code>- (<span class="built_in">NSString</span> *)getSign{
+
+    <span class="built_in">NSDate</span>* date = [<span class="built_in">NSDate</span> dateWithTimeIntervalSinceNow:<span class="number">0</span>];<span class="comment">//获取当前时间0秒后的时间</span>
+    <span class="built_in">NSDate</span>* edate = [<span class="built_in">NSDate</span> dateWithTimeIntervalSinceNow:<span class="number">60</span>*<span class="number">60</span>*<span class="number">24</span>*<span class="number">30</span>];<span class="comment">//一个月</span>
+    <span class="built_in">NSTimeInterval</span> time=[date timeIntervalSince1970];<span class="comment">// *1000 是精确到毫秒，不乘就是精确到秒</span>
+    <span class="built_in">NSTimeInterval</span> etime=[edate timeIntervalSince1970];<span class="comment">// *1000 是精确到毫秒，不乘就是精确到秒</span>
+    <span class="built_in">NSString</span> *timeString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%.0f"</span>, time];
+    <span class="built_in">NSString</span> *etimeString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%.0f"</span>, etime];
+    <span class="keyword">int</span> ranInt = arc4random() %<span class="number">100000</span>;
+    <span class="built_in">NSString</span> *ranString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%d"</span>, ranInt];
+    <span class="built_in">NSString</span> *abketr = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"a=%@&amp;b=%@&amp;k=%@&amp;e=%@&amp;t=%@&amp;r=%@"</span>,
+                        kAPPID,
+                        <span class="string">@"tencentyun"</span>,
+                        kSecretId,
+                        etimeString,
+                        timeString,
+                        ranString
+                        ];
+    <span class="built_in">NSString</span> *signString = [<span class="keyword">self</span> HmacSha1:kSecretKey data:abketr];
+
+    <span class="keyword">return</span> signString;
+}
+</code></pre><p>HMAC-SHA1 算法加密，注意最后需要拼接签名串到NSMutableData末尾：</p>
+<pre><code><span class="comment">//HmacSHA1加密；</span>
+- (<span class="built_in">NSString</span> *)HmacSha1:(<span class="built_in">NSString</span> *)key data:(<span class="built_in">NSString</span> *)data
+{
+    <span class="keyword">const</span> <span class="keyword">char</span> *cKey  = [key cStringUsingEncoding:<span class="built_in">NSASCIIStringEncoding</span>];
+    <span class="keyword">const</span> <span class="keyword">char</span> *cData = [data cStringUsingEncoding:<span class="built_in">NSASCIIStringEncoding</span>];
+
+    <span class="keyword">unsigned</span> <span class="keyword">char</span> cHMAC[CC_SHA1_DIGEST_LENGTH];
+    CCHmac(kCCHmacAlgSHA1, cKey, strlen(cKey), cData, strlen(cData), cHMAC);
+
+    <span class="built_in">NSData</span> *HMAC = [[<span class="built_in">NSData</span> alloc] initWithBytes:cHMAC length:<span class="keyword">sizeof</span>(cHMAC)];
+    <span class="built_in">NSData</span> *dData = [[<span class="built_in">NSData</span> alloc] initWithBytes:cData length:strlen(cData)];
+
+    <span class="built_in">NSMutableData</span> *mData = [[<span class="built_in">NSMutableData</span> alloc] init];
+
+    [mData appendData:HMAC];
+    [mData appendData:dData];
+
+    <span class="built_in">NSString</span> *hash = [mData base64EncodedStringWithOptions:<span class="number">0</span>];<span class="comment">//将加密结果进行一次BASE64编码。</span>
+    <span class="keyword">return</span> hash;
+}
+</code></pre><p>如果是SHA256，可以：</p>
+<pre><code>unsigned <span class="value">char</span> cHMAC<span class="attr_selector">[CC_SHA256_DIGEST_LENGTH]</span>;
+<span class="function">CCHmac</span>(kCCHmacAlgSHA256, cKey, <span class="function">strlen</span>(cKey), cData, <span class="function">strlen</span>(cData), cHMAC);
+</code></pre><h3 id="人脸检测">人脸检测</h3><p>通过生成的签名添加到请求头authorization里面，请求如下：</p>
+<pre><code>NSString *apiString = [NSString <span class="string">stringWithFormat:</span>@<span class="string">"%@%@"</span>,@<span class="string">"https://recognition.image.myqcloud.com"</span>,@<span class="string">"/face/detect"</span>];
+AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+[manager <span class="string">setRequestSerializer:</span>[AFHTTPRequestSerializer serializer]];
+[manager.requestSerializer <span class="string">setValue:</span>@<span class="string">"recognition.image.myqcloud.com"</span> <span class="string">forHTTPHeaderField:</span>@<span class="string">"host"</span>];
+[manager.requestSerializer <span class="string">setValue:</span>[self getSign] <span class="string">forHTTPHeaderField:</span>@<span class="string">"authorization"</span>];
+[manager <span class="string">POST:</span>apiString <span class="string">parameters:</span>params <span class="string">constructingBodyWithBlock:</span>^(id&lt;AFMultipartFormData&gt;  _Nonnull formData) {
+    [formData <span class="string">appendPartWithFileData:</span>imageData <span class="string">name:</span>@<span class="string">"image"</span> <span class="string">fileName:</span>@<span class="string">"image.jpg"</span> <span class="string">mimeType:</span>@<span class="string">"image/jpg"</span>];
+} <span class="string">progress:</span>nil <span class="string">success:</span>^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    block(responseObject);
+} <span class="string">failure:</span>^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    block(nil);
+}];
+</code></pre><p>其他接口可以查看：<br><a href="https://cloud.tencent.com/document/product/867/17719" target="_blank" rel="noopener">1.腾讯云鉴权签名</a><br><a href="https://cloud.tencent.com/document/product/867/17588" target="_blank" rel="noopener">2.人脸识别接口文档</a></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>Test: Welcome to <a href="http://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="http://h]]>
+    <![CDATA[<h3 id="前言">前言</h3><p>工作需要做了一个简易的、通过API第三方人脸识别、人脸对比分析的App Demo，对比了一下各家提供的服务、SDK，最后选择了腾讯云的智能图像服务。<br>调用API的流程为：</p>
+<pre><code><span class="n]]>
     </summary>
+    
+      <category term="腾讯云" scheme="http://yoursite.com/tags/%E8%85%BE%E8%AE%AF%E4%BA%91/"/>
+    
+      <category term="Objective-C SHA1" scheme="http://yoursite.com/tags/Objective-C-SHA1/"/>
+    
+      <category term="人脸识别" scheme="http://yoursite.com/tags/%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB/"/>
+    
+      <category term="鉴权" scheme="http://yoursite.com/tags/%E9%89%B4%E6%9D%83/"/>
     
   </entry>
   
@@ -41,7 +110,7 @@
     <link href="http://yoursite.com/2018/08/01/http-headers/"/>
     <id>http://yoursite.com/2018/08/01/http-headers/</id>
     <published>2018-08-01T12:43:12.000Z</published>
-    <updated>2018-08-21T10:02:08.953Z</updated>
+    <updated>2018-08-21T10:09:57.133Z</updated>
     <content type="html"><![CDATA[<h3 id="前言">前言</h3><p>基于安全的需求，要在API（基于.Net Core）交互的过程中除了特有的鉴权外，还添加额外的Header。</p>
 <h3 id="Strict-Transport-Security">Strict-Transport-Security</h3><h4 id="1-概述">1.概述</h4><p><u>HTTP Strict Transport Security is an excellent feature to support on your site and strengthens your implementation of TLS by getting the User Agent to enforce the use of HTTPS. Recommended value strict-transport-security: max-age=31536000; includeSubDomains.</u></p>
 <p>HTTP Strict Transport Security（HTTP严格安全传输） 通常简称为HSTS，要求浏览器只能通过HTTPS访问当前资源，而不是HTTP。浏览器会自动把所有尝试使用HTTP的请求自动替换为HTTPS请求，在一定范围内（如钓鱼网站等）防止中间人攻击。</p>
@@ -138,7 +207,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/12/20/aspdotnetcoreswagger/"/>
     <id>http://yoursite.com/2017/12/20/aspdotnetcoreswagger/</id>
     <published>2017-12-20T07:25:04.000Z</published>
-    <updated>2018-08-21T10:02:08.953Z</updated>
+    <updated>2018-08-21T10:09:57.133Z</updated>
     <content type="html"><![CDATA[<p>swagger xml文件默认不上传到azure云主机，如需要上传需要修改 <strong>csproj</strong> 文件（Asp.Net Core环境）。添加如下配置：</p>
 <pre><code><span class="tag">&lt;<span class="title">PropertyGroup</span>&gt;</span>
   <span class="tag">&lt;<span class="title">GenerateDocumentationFile</span>&gt;</span>true<span class="tag">&lt;/<span class="title">GenerateDocumentationFile</span>&gt;</span>
@@ -173,7 +242,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/08/01/SQL-%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5/"/>
     <id>http://yoursite.com/2017/08/01/SQL-数据导入/</id>
     <published>2017-08-01T06:34:56.000Z</published>
-    <updated>2018-08-21T10:02:08.953Z</updated>
+    <updated>2018-08-21T10:09:57.133Z</updated>
     <content type="html"><![CDATA[<p>之前写API及处理后台数据的时候写了一些脚本，记录一下。</p>
 <p>快捷数据表操作的存储过程脚本。eg: exec ‘Z_InitData’,’目标表T1’,’源表T2’</p>
 <pre><code><span class="operator"><span class="keyword">Create</span> <span class="keyword">PROCEDURE</span> Z_InitData
@@ -227,7 +296,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/07/31/iOS-Article-001/"/>
     <id>http://yoursite.com/2017/07/31/iOS-Article-001/</id>
     <published>2017-07-31T13:52:35.000Z</published>
-    <updated>2018-08-21T10:02:08.953Z</updated>
+    <updated>2018-08-21T10:09:57.133Z</updated>
     <content type="html"><![CDATA[<h3 id="概念">概念</h3><p>GMT（Greenwich Mean Time）格林尼治时间<br>UTC（Coordinated Universal Time ）原子钟标准时间<br>Unix time（以UTC 1970年1月1号 00：00：00为基准时间）</p>
 <hr>
 <h3 id="sysctl_API">sysctl API</h3><p>iOS系统上次设备重启时间（iOS9后不能使用）</p>
@@ -285,7 +354,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/07/30/iOS-Tips-NSDictionary-NSArray-%E5%BF%AB%E6%8D%B7%E8%AE%A1%E7%AE%97%E5%87%BD%E6%95%B0/"/>
     <id>http://yoursite.com/2017/07/30/iOS-Tips-NSDictionary-NSArray-快捷计算函数/</id>
     <published>2017-07-30T15:15:46.000Z</published>
-    <updated>2018-08-21T10:02:08.953Z</updated>
+    <updated>2018-08-21T10:09:57.133Z</updated>
     <content type="html"><![CDATA[<p>NSArray 有快捷的汇总公式，只要用 @函数.键路径 即可：</p>
 <pre><code><span class="title">NSArray</span> *array = [NSArray arrayWithObjects:@<span class="string">"1.0"</span>,@<span class="string">"2.0"</span>,nil];
 <span class="title">CGFloat</span> sum = [[array valueForKeyPath:@<span class="string">"<span class="variable">@sum</span>.floatValue"</span>] floatValue];
@@ -314,7 +383,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/03/21/Python%E9%93%BE%E5%AE%B6%E7%88%AC%E8%99%AB/"/>
     <id>http://yoursite.com/2017/03/21/Python链家爬虫/</id>
     <published>2017-03-21T02:23:17.000Z</published>
-    <updated>2018-08-21T10:02:08.953Z</updated>
+    <updated>2018-08-21T10:09:57.133Z</updated>
     <content type="html"><![CDATA[<p>业余时间做了个链家的爬虫，爬取数据写入sqlite，方便浏览和对比。<br>具体参考了冰蓝大牛的博客<a href="http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="noopener">http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;utm_medium=referral</a>, 根据链家最新的web样式做了修改（2017-03）爬在售的二手房的数据。</p>
 <p>链家对短时间内同一个IP的流量有监控，所以如果用多线程去爬，太快可能会被要求输入验证码。试了以下用代理ip池去爬，因为可用的免费代理ip不多也不稳定，就放弃了。后面想数据爬的也不多，就加个延时模拟人为慢慢爬了，另外还有个问题可能是单位时间内Request太快可能解析不到数据，就把延时放在BeautifulSoup解析后面，并加了如果没有数据则重复5次请求的验证过程，才成功抓全数据：</p>
 <pre><code><span class="tag">time</span>.<span class="function"><span class="title">sleep</span><span class="params">(np.random.rand()</span></span>*<span class="number">3</span>+<span class="number">3</span>)
@@ -477,7 +546,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/03/13/Python%E9%AB%98%E5%BE%B7%E7%88%AC%E8%99%AB/"/>
     <id>http://yoursite.com/2017/03/13/Python高德爬虫/</id>
     <published>2017-03-13T06:29:59.000Z</published>
-    <updated>2018-08-21T10:02:08.953Z</updated>
+    <updated>2018-08-21T10:09:57.133Z</updated>
     <content type="html"><![CDATA[<p>前段时间因公司需求，需要爬取高德地图的数据，就学习了下Python，并做了个简易的爬虫GUI。</p>
 <p>因为高德有api，所以爬数据灰常简单。<br>整个流程：输入城市编码-》根据api爬取数据-》导出到Excel<br>使用的库：BeautifulSoup PyQt5 openpyxl urllib2 requests等</p>
 <p>具体思路：</p>
@@ -629,7 +698,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
     <link href="http://yoursite.com/2017/03/01/iOS%20VPN%E5%BC%80%E5%8F%91/"/>
     <id>http://yoursite.com/2017/03/01/iOS VPN开发/</id>
     <published>2017-03-01T03:27:43.000Z</published>
-    <updated>2018-08-21T10:02:08.953Z</updated>
+    <updated>2018-08-21T10:09:57.133Z</updated>
     <content type="html"><![CDATA[<p>#####参考链接：<br>1.iOS 9 Network Extension VPN API编程指南<a href="http://www.helusi.com/ios9-network-extension-vpn-api/" target="_blank" rel="noopener">http://www.helusi.com/ios9-network-extension-vpn-api/</a><br>2.分享开发 iOS 和 Mac 全新 VPN 的艰难历程<a href="https://www.v2ex.com/t/264480" target="_blank" rel="noopener">https://www.v2ex.com/t/264480</a><br>3.Potatso原理解析<a href="https://www.kidneyband.com/?p=174" target="_blank" rel="noopener">https://www.kidneyband.com/?p=174</a></p>
 <p>#####苹果开发者文档：<br>NEPacketTunnelProvider<a href="https://developer.apple.com/reference/networkextension/nepackettunnelprovider?language=objc" target="_blank" rel="noopener">https://developer.apple.com/reference/networkextension/nepackettunnelprovider?language=objc</a><br>SimpleTunnel<a href="https://developer.apple.com/library/prerelease/content/samplecode/SimpleTunnel/Introduction/Intro.html" target="_blank" rel="noopener">https://developer.apple.com/library/prerelease/content/samplecode/SimpleTunnel/Introduction/Intro.html</a></p>
 ]]></content>
@@ -650,7 +719,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
     <link href="http://yoursite.com/2015/11/26/UITableView-and-UIActivityIndicatorView/"/>
     <id>http://yoursite.com/2015/11/26/UITableView-and-UIActivityIndicatorView/</id>
     <published>2015-11-25T16:01:59.000Z</published>
-    <updated>2018-08-21T10:02:08.953Z</updated>
+    <updated>2018-08-21T10:09:57.133Z</updated>
     <content type="html"><![CDATA[<hr>
 <p>storyboard 中 UIActivityIndicatorView 要放在tabelview下方<br>tableview y设置为0 重设约束才能保证tableview的顶部不会空白。</p>
 ]]></content>
@@ -669,7 +738,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
     <link href="http://yoursite.com/2015/08/18/NSDictionary-NSMutableDictionary/"/>
     <id>http://yoursite.com/2015/08/18/NSDictionary-NSMutableDictionary/</id>
     <published>2015-08-18T13:35:24.000Z</published>
-    <updated>2018-08-21T10:02:08.953Z</updated>
+    <updated>2018-08-21T10:09:57.133Z</updated>
     <content type="html"><![CDATA[<p>转自：<a href="http://seven-sally.lofter.com/post/19d861_5404fa" target="_blank" rel="noopener">http://seven-sally.lofter.com/post/19d861_5404fa</a></p>
 <h2 id="不可变词典NSDictionary">不可变词典NSDictionary</h2><h3 id="字典初始化">字典初始化</h3><pre><code><span class="built_in">NSNumber</span> *numObj = [<span class="built_in">NSNumber</span> numberWithInt:<span class="number">100</span>];
 </code></pre><h3 id="以一个元素初始化">以一个元素初始化</h3><pre><code>NSDictionary *dic = [NSDictionary <span class="string">dictionaryWithObject:</span>numObj <span class="string">forKey:</span>@<span class="string">"key"</span>];
@@ -742,7 +811,7 @@ for (<span class="typename">int</span> i = <span class="number">0</span>; i &lt;
     <link href="http://yoursite.com/2015/08/17/markdown-mark/"/>
     <id>http://yoursite.com/2015/08/17/markdown-mark/</id>
     <published>2015-08-16T16:01:59.000Z</published>
-    <updated>2018-08-21T10:02:08.953Z</updated>
+    <updated>2018-08-21T10:09:57.133Z</updated>
     <content type="html"><![CDATA[<p>参考<a href="http://ibruce.info/2013/11/26/markdown/" title="不如的博客" target="_blank" rel="noopener">markdown简明语法</a></p>
 <hr>
 <ol>
@@ -772,10 +841,32 @@ for (<span class="typename">int</span> i = <span class="number">0</span>; i &lt;
     <link href="http://yoursite.com/2015/08/13/postname/"/>
     <id>http://yoursite.com/2015/08/13/postname/</id>
     <published>2015-08-12T16:08:31.000Z</published>
-    <updated>2018-08-21T10:02:08.953Z</updated>
+    <updated>2018-08-21T10:09:57.133Z</updated>
     <content type="html"></content>
     <summary type="html">
     
+    </summary>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Hello World]]></title>
+    <link href="http://yoursite.com/2015/08/12/hello-world/"/>
+    <id>http://yoursite.com/2015/08/12/hello-world/</id>
+    <published>2015-08-11T16:01:59.000Z</published>
+    <updated>2018-08-21T10:09:57.133Z</updated>
+    <content type="html"><![CDATA[<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick_Start">Quick Start</h2><h3 id="Create_a_new_post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run_server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate_static_files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="http://hexo.io]]>
     </summary>
     
   </entry>
