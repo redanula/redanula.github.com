@@ -1,1 +1,0 @@
-$(document).ready(function(){var n;$(".sidebar-toggle").on("click",function(){var o=n?0:320;$(".sidebar").animate({width:o},300),n=!n}),$(".back-to-top").on("click",function(){$("html, body").animate({scrollTop:0},300)})});
