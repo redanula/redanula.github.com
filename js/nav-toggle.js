@@ -1,13 +1,1 @@
-$(document).ready(function () {
-  $('.site-nav-toggle button').on('click', function () {
-    var $siteNav = $('.site-nav');
-    var ON_CLASS_NAME = 'site-nav-on';
-    var isSiteNavOn = $siteNav.hasClass(ON_CLASS_NAME);
-    var animateAction = isSiteNavOn ? 'slideUp' : 'slideDown';
-    var animateCallback = isSiteNavOn ? 'removeClass' : 'addClass';
-
-    $siteNav.stop()[animateAction]('fast', function () {
-      $siteNav[animateCallback](ON_CLASS_NAME);
-    });
-  });
-});
+$(document).ready(function(){$(".site-nav-toggle button").on("click",function(){var n=$(".site-nav"),s="site-nav-on",t=n.hasClass(s),a=t?"slideUp":"slideDown",o=t?"removeClass":"addClass";n.stop()[a]("fast",function(){n[o](s)})})});
