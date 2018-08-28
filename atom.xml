@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2018-08-27T00:25:27.540Z</updated>
+  <updated>2018-08-28T04:46:14.861Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,19 +15,190 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title><![CDATA[Travis CI 持续部署Hexo博客到VPS服务器]]></title>
-    <link href="http://yoursite.com/2018/08/23/travis_ci_auto_deploy_hexo_to_vps/"/>
-    <id>http://yoursite.com/2018/08/23/travis_ci_auto_deploy_hexo_to_vps/</id>
-    <published>2018-08-23T14:12:15.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
-    <content type="html"><![CDATA[<p>打开Git的Bash权限后测试</p>
+    <title><![CDATA[Travis CI 持续部署Hexo博客到GitHub Page和VPS服务器]]></title>
+    <link href="http://yoursite.com/2018/08/28/travis_ci_auto_deploy_hexo_to_vps/"/>
+    <id>http://yoursite.com/2018/08/28/travis_ci_auto_deploy_hexo_to_vps/</id>
+    <published>2018-08-28T04:00:00.000Z</published>
+    <updated>2018-08-28T04:46:14.861Z</updated>
+    <content type="html"><![CDATA[<p>###1.写在前面 </p>
+<blockquote>
+<p>N久之前在GitHub Page上部署了Hexo，本地生成文章的时候需要<code>hexo g&amp;&amp;hexo d</code>等步骤才能上传到GitHub，最近又把博客折腾到了VPS上，手动deploy到VPS的同时又不能更新GitHub上，因此搜索了一下解决方案，发现可以实现git flow push到source后，使用Travis CI 持续集成自动deploy到GitHub Page，同时推送到VPS服务器。</p>
+</blockquote>
+<p>###2.构建流程</p>
+<p>####基本准备：</p>
+<ul>
+<li>GitHub Source 即博客源码仓库，以下称为Source</li>
+<li>GitHub Page 静态页仓库</li>
+<li>配置好Nginx，git等环境的VPS</li>
+</ul>
+<p>####构建流程如下：</p>
+<ol>
+<li>新增或修改了文章，push到GitHub的source</li>
+<li>Travis CI 发现source改变后自动执行配置好的脚本，生成静态页面</li>
+<li>Travis 推送静态页面文件到VPS服务器</li>
+<li>Travis push静态页面到GitHub</li>
+</ol>
+<p>###3.GitHub 和 Travis 设置</p>
+<p>因为之前已经建好Blog的仓库和GitHub Page的仓库了，这些网上都很多教程，并不复杂，就直接记录如何让Source的仓库和Travis关联的步骤：</p>
+<ol>
+<li><p>进入GitHub的Setting页面</p>
+<p> <img src="/images/15354229059347.jpg" alt=""></p>
+</li>
+<li><p>选择Developer settings<br> <img src="/images/15354230831184.jpg" alt=""></p>
+</li>
+<li><p>选择Personal access tokens，生成Travis需要的access token</p>
+</li>
+</ol>
+<pre><code>!<span class="attr_selector">[]</span>(/images/<span class="number">15354231182717</span>.jpg)
+</code></pre><ol>
+<li><p>填写一个token的描述，如hexoblog，选择repo，然后Generate token即可</p>
+<p> <img src="/images/15354232588232.jpg" alt=""></p>
+</li>
+<li><p>这里要复制下生成的token（只允许看见一次），在Travis那边可以使用<br>  <img src="/images/15354239349022.jpg" alt=""></p>
+</li>
+<li><p>打开<a href="https://travis-ci.org" target="_blank" rel="noopener">Travis</a>网站(<a href="https://travis-ci.org)，org后缀的才是对GitHub" target="_blank" rel="noopener">https://travis-ci.org)，org后缀的才是对GitHub</a> Public仓库免费的，com的针对是付费的私有仓库的。使用GitHub账号登录。</p>
+<p> <img src="/images/15354244967581.jpg" alt=""><br></p>
+</li>
+<li>网上很多教程说需要打开<code>Build only if .travis.yml is present</code>选项（.travis.yml存在才生成），但最新的设置好像没有这个选项了，这里也不会有影响，然后需要Add一个Token, 新增一个HEXO_TOKEN，ValuE那里填写刚刚GitHub复制的access token即可。<br>iv和key是后面VPS那边自动生成的，这里可以先忽略。配置完以后就需要到博客仓库<code>.travis.yml</code>文件了。<br><img src="/images/15354245505828.jpg" alt=""></li>
+</ol>
+<p>###4.本地配置</p>
+<ol>
+<li><p>在本地Blog根目录下新建.travis.yml文件，配置如下：<br> 其中<code>github.com/redanula/redanula.github.com.git</code>为GitHub Page的仓库，<code>HEXO_TOKEN</code>为Travis刚刚Travis配置的token的标识。</p>
+<pre><code>language: node_js
+node_js: stable
+cache:
+  apt: true
+  directories:
+  -<span class="ruby"> node_modules
+</span>before_install:
+-<span class="ruby"> export <span class="constant">TZ</span>=<span class="string">'Asia/Shanghai'</span>
+</span>install:
+-<span class="ruby"> npm install
+</span>script:
+-<span class="ruby"> hexo clean
+</span>-<span class="ruby"> hexo g &amp;&amp; gulp
+</span>after_script:
+-<span class="ruby"> git clone <span class="symbol">https:</span>/<span class="regexp">/${GH_REF} .deploy_git
+</span></span>-<span class="ruby"><span class="regexp"> cd .deploy_git
+</span></span>-<span class="ruby"><span class="regexp"> git checkout master
+</span></span>-<span class="ruby"><span class="regexp"> cd ../</span>
+</span>-<span class="ruby"> mv .deploy_git/.git/ ./public/
+</span>-<span class="ruby"> cd ./public
+</span>-<span class="ruby"> git config user.name <span class="string">"redanula"</span>
+</span>-<span class="ruby"> git config user.email <span class="string">"yanglangjing@hotmail.com"</span>
+</span>-<span class="ruby"> git add .
+</span>-<span class="ruby"> git commit -m <span class="string">"Travis CI Auto Builder at `date +"</span>%<span class="constant">Y</span>-%m-%d %<span class="constant">H</span><span class="symbol">:%M<span class="string">"`"</span></span>
+</span>-<span class="ruby"> git push --force --quiet <span class="string">"https://${HEXO_TOKEN}@${GH_REF}"</span> <span class="symbol">master:</span>master
+</span>branches:
+  only:
+  -<span class="ruby"> master
+</span>env:
+  global:
+  -<span class="ruby"> <span class="constant">GH_REF</span><span class="symbol">:</span> github.com/redanula/redanula.github.com.git
+</span>notifications:
+  email:
+  -<span class="ruby"> yanglangjing<span class="variable">@hotmail</span>.com
+</span>  on_success: change
+  on_failure: always
+</code></pre></li>
+<li><p>提交<code>.travis.yml</code>文件到GitHub，这时候GitHub Page就会自动生成了。可以打开<a href="https://travis-ci.org" target="_blank" rel="noopener">Travis</a>查看对应的Current构建过程。首次提交的之后，发现生成的 <a href="https://redanula.github.io" target="_blank" rel="noopener">redanula.github.io</a> 是空白的，找了下原因是因为使用的next主题没有在Source仓库的hexo theme的目录，add &amp; push对应的主题到Source仓库之后就成功了。接下来就是服务器的工作了。<br> <img src="/images/15354264456856.jpg" alt=""></p>
+</li>
+</ol>
+<p>###5.VPS服务器配置</p>
+<ol>
+<li><p>ssh登录VPS服务器，安装Travis服务</p>
+<p>先安装ruby 如果提示如下：<br>current directory: /var/lib/gems/2.3.0/gems/ffi-1.9.25/ext/ffi_c<br>/usr/bin/ruby2.3 -r ./siteconf20180821-29696-1onq3fa.rb extconf.rb<br>mkmf.rb can’t find header files for ruby at /usr/lib/ruby/include/ruby.h<br>需要安装对应的ruby包:</p>
+</li>
+</ol>
+<pre><code><span class="preprocessor"># 如果是在centos等系统下面，执行命令：</span>
+yum install ruby-devel 
+
+<span class="preprocessor"># 如果是在Ubuntu等系统下面，执行命令:</span>
+apt-<span class="keyword">get</span> install ruby-dev  
+
+<span class="preprocessor"># 安装travis命令行工具，gem指令需要先安装ruby</span>
+gem install travis
+</code></pre><ol>
+<li><p>新增一个Git账号</p>
+<pre><code><span class="keyword">adduser </span>git
+</code></pre></li>
+<li><p>赋予git用户sudo权限</p>
+<pre><code><span class="keyword">chmod</span> 740 /etc/sudoers
+<span class="keyword">vim</span> /etc/sudoers
+
+<span class="comment"># User privilege specification 在root行后面增加</span>
+<span class="keyword">git</span>    <span class="literal">ALL</span>=(<span class="literal">ALL</span>:<span class="literal">ALL</span>) <span class="literal">ALL</span>
+
+<span class="comment"># 保存退出后，修改回文件权限</span>
+<span class="keyword">chmod</span> 440 /etc/sudoers
+</code></pre></li>
+<li><p>配置SSH</p>
+<pre><code><span class="comment"># 切换到git用户下</span>
+su git
+
+<span class="comment"># 生成ssh密钥对 注意密码要为空，Travis自动过程中才不会被输入密码步骤卡住，生成后目录 /home/git/.ssh/id_rsa</span>
+ssh-keygen -t rsa
+
+<span class="comment"># 设置.ssh目录为700</span>
+chmod <span class="number">700</span> ~<span class="regexp">/.ssh/</span>
+
+<span class="comment"># 设置.ssh目录下的文件为600</span>
+chmod <span class="number">600</span> ~<span class="regexp">/.ssh/</span>*
+
+<span class="comment"># 切换到.ssh/目录</span>
+cd .ssh/
+
+<span class="comment"># 将公钥内容添加到authorized_keys</span>
+cat id_rsa.pub <span class="prompt">&gt;&gt; </span>authorized_keys
+</code></pre></li>
+<li><p>Travis配置</p>
+<pre><code><span class="comment"># 在home目录下拉取Source仓库</span>
+cd /home
+git clone 你的仓库.git 
+
+<span class="comment"># cd到仓库根目录</span>
+<span class="comment"># 登录github帐号</span>
+travis login <span class="comment">--auto</span>
+
+<span class="comment"># 生成加密公钥文件id_rsa.enc并自动增加解密行到.travis.yml文件；-r 指向GitHub的Source仓库</span>
+travis <span class="built_in">encrypt</span>-<span class="built_in">file</span> ~/.ssh/id_rsa <span class="comment">--add -r redanula/blog-hexo-source</span>
+</code></pre><p> 修改.travis.yml，在before_install钩子后面添加权限处理:</p>
+<pre><code>before_install:
+
+- chmod 600 ~/.ssh/id_rsa
+- echo -e <span class="string">"Host 【配置名】\n\tStrictHostKeyChecking no\n"</span> &gt;&gt; ~/.ssh/config
+</code></pre><p> 修改.travis.yml，在after_success钩子后面添加推送行为：</p>
+<pre><code>#/var/www/blog为博客目录
+after_script:   
+
+- rsync -rv --delete -e 'ssh -o stricthostkeychecking=no -p 对应ssh端口' public/ git@对应的IP或域名:/var/www/blog
+</code></pre></li>
+</ol>
+<pre><code>这里注意`~/.ssh/id_rsa`路径需要去掉travis命令自动添加的转义 \\ 这里的key和iv文件就是上文图中Travis后台自动出现的两个值
+
+    openssl aes-<span class="number">256</span>-cbc -K <span class="variable">$encrypted</span>_598a070685f0_key -iv <span class="variable">$encrypted</span>_598a070685f0_iv -<span class="keyword">in</span> id_rsa.enc -out ~/.ssh/id_rsa -d
+
+推送.travis.yml文件到Source（也可以vps先推送上去本地拉下来做上述几步的修改）
+
+    git add ./
+    git commit -m <span class="string">"Travis CI"</span>
+    git push
+
+接下来就可以随意只管提交文章，Travis会自动持续集成到GitHub Page 和 服务器了：）。
+
+    Done. Your build exited with <span class="number">0</span>.
+</code></pre><p>###6.参考文章</p>
+<p><a href="https://skychang.github.io/2017/01/01/Hexo-Use_Travis_CI_Auto_Deploy_Blog/" target="_blank" rel="noopener">Hexo - 使用 Travis CI 自動佈署 Blog</a><br><a href="https://segmentfault.com/a/1190000009054888" target="_blank" rel="noopener">使用 Travis 自动部署 Hexo 到 Github 与 自己的服务器</a><br><a href="https://blog.csdn.net/qq_23079443/article/details/79015225" target="_blank" rel="noopener">用TravisCI持续集成自动部署Hexo博客的个人实践</a><br><a href="https://www.noonme.com/post/2016/03/travisci-hexo-deploy/" target="_blank" rel="noopener">使用travis-ci自动部署hexo博客</a><br><a href="https://www.peteruhnak.com/blog/2016/06/06/deploying-pharo-builds-from-travis-over-ssh/" target="_blank" rel="noopener">Deploying Pharo builds from Travis over ssh</a><br><a href="https://juejin.im/post/5a9e1a5751882555712bd8e1" target="_blank" rel="noopener">Travis-CI自动化测试并部署至自己的CentOS服务器</a><br><a href="https://www.jianshu.com/p/b926ecf1c6f6" target="_blank" rel="noopener">Hexo搭建个人博客并使用Git部署到VPS</a></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>打开Git的Bash权限后测试</p>
-]]>
+    <![CDATA[<p>###1.写在前面 </p>
+<blockquote>
+<p>N久之前在GitHub Page上部署了Hexo，本地生成文章的时候需要<code>hexo g&amp;&amp;hexo d</code>等步骤才能上传到GitHub，最近又把博客折腾到了VPS上，手动dep]]>
     </summary>
     
       <category term="Travis CI" scheme="http://yoursite.com/tags/Travis-CI/"/>
+    
+      <category term="Hexo" scheme="http://yoursite.com/tags/Hexo/"/>
     
   </entry>
   
@@ -36,7 +207,7 @@
     <link href="http://yoursite.com/2018/08/08/tencentcloudservice/"/>
     <id>http://yoursite.com/2018/08/08/tencentcloudservice/</id>
     <published>2018-08-08T14:12:15.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
+    <updated>2018-08-28T04:46:14.857Z</updated>
     <content type="html"><![CDATA[<h3 id="前言">前言</h3><p>工作需要做了一个简易的、通过API第三方人脸识别、人脸对比分析的App Demo，对比了一下各家提供的服务、SDK，最后选择了腾讯云的智能图像服务。<br>调用API的流程为：</p>
 <pre><code><span class="number">1.</span>鉴权签名 
 <span class="number">2.</span>调用人脸识别、人脸对比等API。
@@ -127,7 +298,7 @@ AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     <link href="http://yoursite.com/2018/08/01/http-headers/"/>
     <id>http://yoursite.com/2018/08/01/http-headers/</id>
     <published>2018-08-01T12:43:12.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
+    <updated>2018-08-28T04:46:14.857Z</updated>
     <content type="html"><![CDATA[<h3 id="前言">前言</h3><p>基于安全的需求，要在API（基于.Net Core）交互的过程中除了特有的鉴权外，还添加额外的Header。</p>
 <h3 id="Strict-Transport-Security">Strict-Transport-Security</h3><h4 id="1-概述">1.概述</h4><p><u>HTTP Strict Transport Security is an excellent feature to support on your site and strengthens your implementation of TLS by getting the User Agent to enforce the use of HTTPS. Recommended value strict-transport-security: max-age=31536000; includeSubDomains.</u></p>
 <p>HTTP Strict Transport Security（HTTP严格安全传输） 通常简称为HSTS，要求浏览器只能通过HTTPS访问当前资源，而不是HTTP。浏览器会自动把所有尝试使用HTTP的请求自动替换为HTTPS请求，在一定范围内（如钓鱼网站等）防止中间人攻击。</p>
@@ -224,7 +395,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/12/20/aspdotnetcoreswagger/"/>
     <id>http://yoursite.com/2017/12/20/aspdotnetcoreswagger/</id>
     <published>2017-12-20T07:25:04.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
+    <updated>2018-08-28T04:46:14.857Z</updated>
     <content type="html"><![CDATA[<p>swagger xml文件默认不上传到azure云主机，如需要上传需要修改 <strong>csproj</strong> 文件（Asp.Net Core环境）。添加如下配置：</p>
 <pre><code><span class="tag">&lt;<span class="title">PropertyGroup</span>&gt;</span>
   <span class="tag">&lt;<span class="title">GenerateDocumentationFile</span>&gt;</span>true<span class="tag">&lt;/<span class="title">GenerateDocumentationFile</span>&gt;</span>
@@ -259,7 +430,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/08/01/SQL-%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5/"/>
     <id>http://yoursite.com/2017/08/01/SQL-数据导入/</id>
     <published>2017-08-01T06:34:56.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
+    <updated>2018-08-28T04:46:14.857Z</updated>
     <content type="html"><![CDATA[<p>之前写API及处理后台数据的时候写了一些脚本，记录一下。</p>
 <p>快捷数据表操作的存储过程脚本。eg: exec ‘Z_InitData’,’目标表T1’,’源表T2’</p>
 <pre><code><span class="operator"><span class="keyword">Create</span> <span class="keyword">PROCEDURE</span> Z_InitData
@@ -313,7 +484,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/07/31/iOS-Article-001/"/>
     <id>http://yoursite.com/2017/07/31/iOS-Article-001/</id>
     <published>2017-07-31T13:52:35.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
+    <updated>2018-08-28T04:46:14.857Z</updated>
     <content type="html"><![CDATA[<h3 id="概念">概念</h3><p>GMT（Greenwich Mean Time）格林尼治时间<br>UTC（Coordinated Universal Time ）原子钟标准时间<br>Unix time（以UTC 1970年1月1号 00：00：00为基准时间）</p>
 <hr>
 <h3 id="sysctl_API">sysctl API</h3><p>iOS系统上次设备重启时间（iOS9后不能使用）</p>
@@ -371,7 +542,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/07/30/iOS-Tips-NSDictionary-NSArray-%E5%BF%AB%E6%8D%B7%E8%AE%A1%E7%AE%97%E5%87%BD%E6%95%B0/"/>
     <id>http://yoursite.com/2017/07/30/iOS-Tips-NSDictionary-NSArray-快捷计算函数/</id>
     <published>2017-07-30T15:15:46.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
+    <updated>2018-08-28T04:46:14.857Z</updated>
     <content type="html"><![CDATA[<p>NSArray 有快捷的汇总公式，只要用 @函数.键路径 即可：</p>
 <pre><code><span class="title">NSArray</span> *array = [NSArray arrayWithObjects:@<span class="string">"1.0"</span>,@<span class="string">"2.0"</span>,nil];
 <span class="title">CGFloat</span> sum = [[array valueForKeyPath:@<span class="string">"<span class="variable">@sum</span>.floatValue"</span>] floatValue];
@@ -400,7 +571,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/03/21/Python%E9%93%BE%E5%AE%B6%E7%88%AC%E8%99%AB/"/>
     <id>http://yoursite.com/2017/03/21/Python链家爬虫/</id>
     <published>2017-03-21T02:23:17.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
+    <updated>2018-08-28T04:46:14.857Z</updated>
     <content type="html"><![CDATA[<p>业余时间做了个链家的爬虫，爬取数据写入sqlite，方便浏览和对比。<br>具体参考了冰蓝大牛的博客<a href="http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="noopener">http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;utm_medium=referral</a>, 根据链家最新的web样式做了修改（2017-03）爬在售的二手房的数据。</p>
 <p>链家对短时间内同一个IP的流量有监控，所以如果用多线程去爬，太快可能会被要求输入验证码。试了以下用代理ip池去爬，因为可用的免费代理ip不多也不稳定，就放弃了。后面想数据爬的也不多，就加个延时模拟人为慢慢爬了，另外还有个问题可能是单位时间内Request太快可能解析不到数据，就把延时放在BeautifulSoup解析后面，并加了如果没有数据则重复5次请求的验证过程，才成功抓全数据：</p>
 <pre><code><span class="tag">time</span>.<span class="function"><span class="title">sleep</span><span class="params">(np.random.rand()</span></span>*<span class="number">3</span>+<span class="number">3</span>)
@@ -563,7 +734,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/03/13/Python%E9%AB%98%E5%BE%B7%E7%88%AC%E8%99%AB/"/>
     <id>http://yoursite.com/2017/03/13/Python高德爬虫/</id>
     <published>2017-03-13T06:29:59.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
+    <updated>2018-08-28T04:46:14.857Z</updated>
     <content type="html"><![CDATA[<p>前段时间因公司需求，需要爬取高德地图的数据，就学习了下Python，并做了个简易的爬虫GUI。</p>
 <p>因为高德有api，所以爬数据灰常简单。<br>整个流程：输入城市编码-》根据api爬取数据-》导出到Excel<br>使用的库：BeautifulSoup PyQt5 openpyxl urllib2 requests等</p>
 <p>具体思路：</p>
@@ -715,7 +886,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
     <link href="http://yoursite.com/2017/03/01/iOS%20VPN%E5%BC%80%E5%8F%91/"/>
     <id>http://yoursite.com/2017/03/01/iOS VPN开发/</id>
     <published>2017-03-01T03:27:43.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
+    <updated>2018-08-28T04:46:14.857Z</updated>
     <content type="html"><![CDATA[<p>#####参考链接：<br>1.iOS 9 Network Extension VPN API编程指南<a href="http://www.helusi.com/ios9-network-extension-vpn-api/" target="_blank" rel="noopener">http://www.helusi.com/ios9-network-extension-vpn-api/</a><br>2.分享开发 iOS 和 Mac 全新 VPN 的艰难历程<a href="https://www.v2ex.com/t/264480" target="_blank" rel="noopener">https://www.v2ex.com/t/264480</a><br>3.Potatso原理解析<a href="https://www.kidneyband.com/?p=174" target="_blank" rel="noopener">https://www.kidneyband.com/?p=174</a></p>
 <p>#####苹果开发者文档：<br>NEPacketTunnelProvider<a href="https://developer.apple.com/reference/networkextension/nepackettunnelprovider?language=objc" target="_blank" rel="noopener">https://developer.apple.com/reference/networkextension/nepackettunnelprovider?language=objc</a><br>SimpleTunnel<a href="https://developer.apple.com/library/prerelease/content/samplecode/SimpleTunnel/Introduction/Intro.html" target="_blank" rel="noopener">https://developer.apple.com/library/prerelease/content/samplecode/SimpleTunnel/Introduction/Intro.html</a></p>
 ]]></content>
@@ -736,7 +907,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
     <link href="http://yoursite.com/2015/11/26/UITableView-and-UIActivityIndicatorView/"/>
     <id>http://yoursite.com/2015/11/26/UITableView-and-UIActivityIndicatorView/</id>
     <published>2015-11-25T16:01:59.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
+    <updated>2018-08-28T04:46:14.857Z</updated>
     <content type="html"><![CDATA[<hr>
 <p>storyboard 中 UIActivityIndicatorView 要放在tabelview下方<br>tableview y设置为0 重设约束才能保证tableview的顶部不会空白。</p>
 ]]></content>
@@ -755,7 +926,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
     <link href="http://yoursite.com/2015/08/18/NSDictionary-NSMutableDictionary/"/>
     <id>http://yoursite.com/2015/08/18/NSDictionary-NSMutableDictionary/</id>
     <published>2015-08-18T13:35:24.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
+    <updated>2018-08-28T04:46:14.857Z</updated>
     <content type="html"><![CDATA[<p>转自：<a href="http://seven-sally.lofter.com/post/19d861_5404fa" target="_blank" rel="noopener">http://seven-sally.lofter.com/post/19d861_5404fa</a></p>
 <h2 id="不可变词典NSDictionary">不可变词典NSDictionary</h2><h3 id="字典初始化">字典初始化</h3><pre><code><span class="built_in">NSNumber</span> *numObj = [<span class="built_in">NSNumber</span> numberWithInt:<span class="number">100</span>];
 </code></pre><h3 id="以一个元素初始化">以一个元素初始化</h3><pre><code>NSDictionary *dic = [NSDictionary <span class="string">dictionaryWithObject:</span>numObj <span class="string">forKey:</span>@<span class="string">"key"</span>];
@@ -828,7 +999,7 @@ for (<span class="typename">int</span> i = <span class="number">0</span>; i &lt;
     <link href="http://yoursite.com/2015/08/17/markdown-mark/"/>
     <id>http://yoursite.com/2015/08/17/markdown-mark/</id>
     <published>2015-08-16T16:01:59.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
+    <updated>2018-08-28T04:46:14.857Z</updated>
     <content type="html"><![CDATA[<p>参考<a href="http://ibruce.info/2013/11/26/markdown/" title="不如的博客" target="_blank" rel="noopener">markdown简明语法</a></p>
 <hr>
 <ol>
@@ -836,17 +1007,158 @@ for (<span class="typename">int</span> i = <span class="number">0</span>; i &lt;
 <li>多级标题用n个#号</li>
 <li>大标题、小标题用3个或以上===、—</li>
 <li>引用&lt;、&lt;&lt;</li>
-<li>行内代码&lt;!–￼0–&gt;</li>
+<li>行内代码&lt;!–0–&gt;</li>
 <li>段落代码每行前加1个tab</li>
 <li>无序列表用+或-号</li>
 <li>文字链接用[text](url,””)；超链接用<url>;图片链接用![text](url,””)</url></li>
 </ol>
+<h1 id="Markdown_语法和_MWeb_写作使用说明">Markdown 语法和 MWeb 写作使用说明</h1><h2 id="Markdown_的设计哲学">Markdown 的设计哲学</h2><blockquote>
+<p>Markdown 的目標是實現「易讀易寫」。<br>不過最需要強調的便是它的可讀性。一份使用 Markdown 格式撰寫的文件應該可以直接以純文字發佈，並且看起來不會像是由許多標籤或是格式指令所構成。<br>Markdown 的語法有個主要的目的：用來作為一種網路內容的<em>寫作</em>用語言。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="本文约定">本文约定</h2><p>如果有写 <code>效果如下：</code>， 在 MWeb 编辑状态下只有用 <code>CMD + 4</code> 或 <code>CMD + R</code> 预览才可以看效果。</p>
+<h2 id="标题">标题</h2><p>Markdown 语法：</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 第一级标题 `&lt;h1&gt;` </span><br><span class="line">## 第二级标题 `&lt;h2&gt;` </span><br><span class="line">###### 第六级标题 `&lt;h6&gt;`</span><br></pre></td></tr></table></figure>
+<p>效果如下：</p>
+<h1 id="第一级标题_&lt;h1&gt;">第一级标题 <code>&lt;h1&gt;</code></h1><h2 id="第二级标题_&lt;h2&gt;">第二级标题 <code>&lt;h2&gt;</code></h2><h6 id="第六级标题_&lt;h6&gt;">第六级标题 <code>&lt;h6&gt;</code></h6><h2 id="强调">强调</h2><p>Markdown 语法：</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">*这些文字会生成`&lt;em&gt;`*</span><br><span class="line">_这些文字会生成`&lt;u&gt;`_</span><br><span class="line"></span><br><span class="line">**这些文字会生成`&lt;strong&gt;`**</span><br><span class="line">__这些文字会生成`&lt;strong&gt;`__</span><br></pre></td></tr></table></figure>
+<p>在 MWeb 中的快捷键为： <code>CMD + U</code>、<code>CMD + I</code>、<code>CMD + B</code><br>效果如下：</p>
+<p><em>这些文字会生成<code>&lt;em&gt;</code></em><br><em>这些文字会生成<code>&lt;u&gt;</code></em></p>
+<p><strong>这些文字会生成<code>&lt;strong&gt;</code></strong><br><strong>这些文字会生成<code>&lt;strong&gt;</code></strong></p>
+<h2 id="换行">换行</h2><p>四个及以上空格加回车。<br>如果不想打这么多空格，只要回车就为换行，请勾选：<code>Preferences</code> - <code>Themes</code> - <code>Translate newlines to &lt;br&gt; tags</code></p>
+<h2 id="列表">列表</h2><h3 id="无序列表">无序列表</h3><p>Markdown 语法：</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">* 项目一 无序列表 `* + 空格键`</span><br><span class="line">* 项目二</span><br><span class="line">	* 项目二的子项目一 无序列表 `TAB + * + 空格键`</span><br><span class="line">	* 项目二的子项目二</span><br></pre></td></tr></table></figure>
+<p>在 MWeb 中的快捷键为： <code>Option + U</code><br>效果如下：</p>
+<ul>
+<li>项目一 无序列表 <code>* + 空格键</code></li>
+<li>项目二<ul>
+<li>项目二的子项目一 无序列表 <code>TAB + * + 空格键</code></li>
+<li>项目二的子项目二</li>
+</ul>
+</li>
+</ul>
+<h3 id="有序列表">有序列表</h3><p>Markdown 语法：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> 项目一 有序列表 `数字 + . + 空格键`</span><br><span class="line"><span class="number">2.</span> 项目二 </span><br><span class="line"><span class="number">3.</span> 项目三</span><br><span class="line">	<span class="number">1.</span> 项目三的子项目一 有序列表 `TAB + 数字 + . + 空格键`</span><br><span class="line">	<span class="number">2.</span> 项目三的子项目二</span><br></pre></td></tr></table></figure>
+<p>效果如下：</p>
+<ol>
+<li>项目一 有序列表 <code>数字 + . + 空格键</code></li>
+<li>项目二 </li>
+<li>项目三<ol>
+<li>项目三的子项目一 有序列表 <code>TAB + 数字 + . + 空格键</code></li>
+<li>项目三的子项目二</li>
+</ol>
+</li>
+</ol>
+<h3 id="任务列表（Task_lists）">任务列表（Task lists）</h3><p>Markdown 语法：</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-<span class="ruby"> [ ] 任务一 未做任务 <span class="string">`- + 空格 + [ ]`</span></span></span><br><span class="line"><span class="ruby">- [x] 任务二 已做任务 <span class="string">`- + 空格 + [x]`</span></span></span><br></pre></td></tr></table></figure>
+<p>效果如下：</p>
+<ul>
+<li>[ ] 任务一 未做任务 <code>- + 空格 + [ ]</code></li>
+<li>[x] 任务二 已做任务 <code>- + 空格 + [x]</code></li>
+</ul>
+<h2 id="图片">图片</h2><p>Markdown 语法：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">![<span class="string">GitHub set up</span>](<span class="link">http://zh.mweb.im/asset/img/set-up-git.gif</span>)</span><br><span class="line">格式: ![<span class="string">Alt Text</span>](<span class="link">url</span>)</span><br></pre></td></tr></table></figure>
+<p><code>Control + Shift + I</code> 可插入Markdown语法。<br>如果是 MWeb 的文档库中的文档，还可以用拖放图片、<code>CMD + V</code> 粘贴、<code>CMD + Option + I</code> 导入这三种方式来增加图片。<br>效果如下：</p>
+<p><img src="http://zh.mweb.im/asset/img/set-up-git.gif" alt="GitHub set up"></p>
+<p>MWeb 引入的特别的语法来设置图片宽度，方法是在图片描述后加 <code>-w + 图片宽度</code> 即可，比如说要设置上面的图片的宽度为 140，语法如下：</p>
+<p><img src="http://zh.mweb.im/asset/img/set-up-git.gif" alt="GitHub set up-w140"></p>
+<h2 id="链接">链接</h2><p>Markdown 语法：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">email <span class="xml"><span class="tag">&lt;<span class="name">example@example.com</span>&gt;</span></span></span><br><span class="line">[<span class="string">GitHub</span>](<span class="link">http://github.com</span>)</span><br><span class="line">自动生成连接  <span class="xml"><span class="tag">&lt;<span class="name">http:</span>//<span class="attr">www.github.com</span>/&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p><code>Control + Shift + L</code> 可插入Markdown语法。<br>如果是 MWeb 的文档库中的文档，拖放或<code>CMD + Option + I</code> 导入非图片时，会生成连接。<br>效果如下：</p>
+<p>Email 连接： <a href="&#x6d;&#97;&#105;&#108;&#116;&#111;&#x3a;&#x65;&#x78;&#x61;&#109;&#x70;&#108;&#101;&#x40;&#x65;&#x78;&#x61;&#109;&#x70;&#x6c;&#101;&#46;&#x63;&#x6f;&#x6d;">&#x65;&#x78;&#x61;&#109;&#x70;&#108;&#101;&#x40;&#x65;&#x78;&#x61;&#109;&#x70;&#x6c;&#101;&#46;&#x63;&#x6f;&#x6d;</a><br><a href="http://github.com" target="_blank" rel="noopener">连接标题Github网站</a><br>自动生成连接像： <a href="http://www.github.com/" target="_blank" rel="noopener">http://www.github.com/</a> 这样</p>
+<h2 id="区块引用">区块引用</h2><p>Markdown 语法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">某某说:</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> 第一行引用</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> 第二行费用文字</span></span><br></pre></td></tr></table></figure>
+<p><code>CMD + Shift + B</code> 可插入Markdown语法。<br>效果如下：</p>
+<p>某某说:</p>
+<blockquote>
+<p>第一行引用<br>第二行费用文字</p>
+</blockquote>
+<h2 id="行内代码">行内代码</h2><p>Markdown 语法：</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">像这样即可：`&lt;addr&gt;` `<span class="keyword">code</span>`</span><br></pre></td></tr></table></figure>
+<p><code>CMD + K</code> 可插入Markdown语法。<br>效果如下：</p>
+<p>像这样即可：<code>&lt;addr&gt;</code> <code>code</code></p>
+<h2 id="多行或者一段代码">多行或者一段代码</h2><p>Markdown 语法：</p>
+<pre><code><span class="comment"><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fancyAlert</span>(<span class="params">arg</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(arg) &#123;</span><br><span class="line">    $.facebox(&#123;<span class="attr">div</span>:<span class="string">'#foo'</span>&#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></span>
+</code></pre><p><code>CMD + Shift + K</code> 可插入Markdown语法。<br>效果如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fancyAlert</span>(<span class="params">arg</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(arg) &#123;</span><br><span class="line">		$.facebox(&#123;<span class="attr">div</span>:<span class="string">'#foo'</span>&#125;)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="顺序图或流程图">顺序图或流程图</h2><p>Markdown 语法：</p>
+<pre><code><span class="comment"><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">张三-&gt;李四: 嘿，小四儿, 写博客了没?</span><br><span class="line">Note right of 李四: 李四愣了一下，说：</span><br><span class="line">李四--&gt;张三: 忙得吐血，哪有时间写。</span><br></pre></td></tr></table></figure></span>
+
+<span class="comment"><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">st=&gt;start: 开始</span><br><span class="line">e=&gt;end: 结束</span><br><span class="line">op=&gt;operation: 我的操作</span><br><span class="line">cond=&gt;condition: 确认？</span><br><span class="line"></span><br><span class="line">st-&gt;op-&gt;cond</span><br><span class="line">cond(yes)-&gt;e</span><br><span class="line">cond(no)-&gt;op</span><br></pre></td></tr></table></figure></span>
+</code></pre><p>效果如下（ <code>Preferences</code> - <code>Themes</code> - <code>Enable sequence &amp; flow chart</code> 才会看到效果 ）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">张三-&gt;李四: 嘿，小四儿, 写博客了没?</span><br><span class="line">Note right of 李四: 李四愣了一下，说：</span><br><span class="line">李四--&gt;张三: 忙得吐血，哪有时间写。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">st=&gt;start: 开始</span><br><span class="line">e=&gt;end: 结束</span><br><span class="line">op=&gt;operation: 我的操作</span><br><span class="line">cond=&gt;condition: 确认？</span><br><span class="line"></span><br><span class="line">st-&gt;op-&gt;cond</span><br><span class="line">cond(yes)-&gt;e</span><br><span class="line">cond(no)-&gt;op</span><br></pre></td></tr></table></figure>
+<p>更多请参考：<a href="http://bramp.github.io/js-sequence-diagrams/" target="_blank" rel="noopener">http://bramp.github.io/js-sequence-diagrams/</a>, <a href="http://adrai.github.io/flowchart.js/" target="_blank" rel="noopener">http://adrai.github.io/flowchart.js/</a></p>
+<h2 id="表格">表格</h2><p>Markdown 语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">第一格表头 | 第二格表头</span><br><span class="line">--------- | -------------</span><br><span class="line">内容单元格 第一列第一格 | 内容单元格第二列第一格</span><br><span class="line">内容单元格 第一列第二格 多加文字 | 内容单元格第二列第二格</span><br></pre></td></tr></table></figure>
+<p>效果如下：</p>
+<table>
+<thead>
+<tr>
+<th>第一格表头</th>
+<th>第二格表头</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>内容单元格 第一列第一格</td>
+<td>内容单元格第二列第一格</td>
+</tr>
+<tr>
+<td>内容单元格 第一列第二格 多加文字</td>
+<td>内容单元格第二列第二格</td>
+</tr>
+</tbody>
+</table>
+<h2 id="删除线">删除线</h2><p>Markdown 语法：</p>
+<pre><code>加删除线像这样用： ~~删除这些~~
+</code></pre><p>效果如下：</p>
+<p>加删除线像这样用： <del>删除这些</del></p>
+<h2 id="分隔线">分隔线</h2><p>以下三种方式都可以生成分隔线：</p>
+<pre><code><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
+
+<span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
+
+- - -
+</code></pre><p>效果如下：</p>
+<hr>
+<hr>
+<hr>
+<h2 id="MathJax">MathJax</h2><p>Markdown 语法：</p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">块级公式：</span><br><span class="line">$$	x = <span class="symbol">\d</span>frac&#123;-b <span class="symbol">\p</span>m <span class="symbol">\s</span>qrt&#123;b^2 - 4ac&#125;&#125;&#123;2a&#125; $$</span><br><span class="line"></span><br><span class="line"><span class="symbol">\\</span>[ <span class="symbol">\f</span>rac&#123;1&#125;&#123;<span class="symbol">\B</span>igl(<span class="symbol">\s</span>qrt&#123;<span class="symbol">\p</span>hi <span class="symbol">\s</span>qrt&#123;5&#125;&#125;-<span class="symbol">\p</span>hi<span class="symbol">\B</span>igr) e^&#123;<span class="symbol">\f</span>rac25 <span class="symbol">\p</span>i&#125;&#125; =</span><br><span class="line">1+<span class="symbol">\f</span>rac&#123;e^&#123;-2<span class="symbol">\p</span>i&#125;&#125; &#123;1+<span class="symbol">\f</span>rac&#123;e^&#123;-4<span class="symbol">\p</span>i&#125;&#125; &#123;1+<span class="symbol">\f</span>rac&#123;e^&#123;-6<span class="symbol">\p</span>i&#125;&#125;</span><br><span class="line">&#123;1+<span class="symbol">\f</span>rac&#123;e^&#123;-8<span class="symbol">\p</span>i&#125;&#125; &#123;1+<span class="symbol">\l</span>dots&#125; &#125; &#125; &#125; <span class="symbol">\\</span>]</span><br><span class="line"></span><br><span class="line">行内公式： $<span class="symbol">\G</span>amma(n) = (n-1)!<span class="symbol">\q</span>uad<span class="symbol">\f</span>orall n<span class="symbol">\i</span>n<span class="symbol">\m</span>athbb N$</span><br></pre></td></tr></table></figure>
+<p>效果如下（<code>Preferences</code> - <code>Themes</code> - <code>Enable MathJax</code> 才会看到效果）：</p>
+<p>块级公式：<br>$$    x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} $$</p>
+<p>\[ \frac{1}{\Bigl(\sqrt{\phi \sqrt{5}}-\phi\Bigr) e^{\frac25 \pi}} =<br>1+\frac{e^{-2\pi}} {1+\frac{e^{-4\pi}} {1+\frac{e^{-6\pi}}<br>{1+\frac{e^{-8\pi}} {1+\ldots} } } } \]</p>
+<p>行内公式： $\Gamma(n) = (n-1)!\quad\forall n\in\mathbb N$</p>
+<h2 id="脚注（Footnote）">脚注（Footnote）</h2><p>Markdown 语法：</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这是一个脚注：<span class="string">[^sample_footnote]</span></span><br></pre></td></tr></table></figure>
+<p>效果如下：</p>
+<p>这是一个脚注：<a href="这里是脚注信息">^sample_footnote</a></p>
+<h2 id="注释和阅读更多">注释和阅读更多</h2><!-- comment -->
+<!-- more -->
+<p>Actions-&gt;Insert Read More Comment <em>或者</em> <code>Command + .</code><br><strong>注</strong> 阅读更多的功能只用在生成网站或博客时，插入时注意要后空一行。</p>
+<h2 id="TOC">TOC</h2><p>Markdown 语法：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[TOC]</span><br></pre></td></tr></table></figure>
+<p>效果如下：</p>
+<p>[TOC]</p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>参考<a href="http://ibruce.info/2013/11/26/markdown/" title="不如的博客" target="_blank" rel="noopener">markdown简明语法</a></p>
 <hr>
 <ol>
-<li>强调用*或]]>
+<li>强调用*或_</li>
+<li>多级标题用n个#号</li>
+<li>大标题、小标题用3个或以上===、—</li>
+<li>引用&lt;、&lt;&lt;</li>
+<li>行内代码&lt;!–0–&gt;</li>
+<li>段落代码每行前加1个tab</li>
+<li>无序列表用+或-号</li>
+<li>文字链接用[text](url,””)；超链接用<url>;图片链接用![text](url,””)</url></li>
+</ol>
+<h1 id="Markdown_语法和_MWeb_写作使用说明">Markdown 语法和 MWeb 写作使用说明</h1><h2 id="Markdown_的设计哲学">Markdown 的设计哲学</h2><blockquote>
+<p>Markdown 的目標是實現「易讀易寫」。<br>不過最需要強調的便是它的可讀性。一份使用 Markdown 格式撰寫的文件應該可以直接以純文字發佈，並且看起來不會像是由許多標籤或是格式指令所構成。<br>Markdown 的語法有個主要的目的：用來作為一種網路內容的<em>寫作</em>用語言。</p>
+</blockquote>]]>
+    
     </summary>
     
       <category term="markdown" scheme="http://yoursite.com/tags/markdown/"/>
@@ -858,7 +1170,7 @@ for (<span class="typename">int</span> i = <span class="number">0</span>; i &lt;
     <link href="http://yoursite.com/2015/08/13/postname/"/>
     <id>http://yoursite.com/2015/08/13/postname/</id>
     <published>2015-08-12T16:08:31.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
+    <updated>2018-08-28T04:46:14.857Z</updated>
     <content type="html"></content>
     <summary type="html">
     
@@ -871,7 +1183,7 @@ for (<span class="typename">int</span> i = <span class="number">0</span>; i &lt;
     <link href="http://yoursite.com/2015/08/12/hello-world/"/>
     <id>http://yoursite.com/2015/08/12/hello-world/</id>
     <published>2015-08-11T16:01:59.000Z</published>
-    <updated>2018-08-27T00:25:27.540Z</updated>
+    <updated>2018-08-28T04:46:14.857Z</updated>
     <content type="html"><![CDATA[<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
 <h2 id="Quick_Start">Quick Start</h2><h3 id="Create_a_new_post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
 <p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
