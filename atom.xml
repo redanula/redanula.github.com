@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2018-10-17T03:58:32.021Z</updated>
+  <updated>2018-10-17T04:04:04.396Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -19,9 +19,8 @@
     <link href="http://yoursite.com/2018/09/24/2018-09-24/"/>
     <id>http://yoursite.com/2018/09/24/2018-09-24/</id>
     <published>2018-09-24T07:30:59.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
-    <content type="html"><![CDATA[<p>###Apple Pencil绘制原理</p>
-<p><img src="/images/15377762585144.png" alt=""></p>
+    <updated>2018-10-17T04:04:04.396Z</updated>
+    <content type="html"><![CDATA[<h3 id="Apple_Pencil绘制原理">Apple Pencil绘制原理</h3><p><img src="/images/15377762585144.png" alt=""></p>
 <ul>
 <li>Apple Pencil 可以额外采集到 altitude（高度角）、azimuth（方位角）、force（压感值）</li>
 <li>关于force压感值（3D Touch）：force乘以一个压感系数sensitivity(自定义)，计算一个两点之前的线宽linewidth(force * sensitivity)，来实现压力不同线宽不同功能</li>
@@ -31,15 +30,13 @@
 </ul>
 <p><strong>以上的场景，使用force、altitude的计算、或处理合并的所有点均会增加绘制过程中的点阵数据包的大小，同时绘制的系数也需要调优减少可能造成的锯齿，如果是互动白板传输数据的场景（如腾讯在线课堂、网易白板等），都没有使用压感和角度的功能。如果是本地高精度的绘画应用，均是可以实现的。具体是否需要可以根据后续需求来定。后续会针对这一块（使用force、altitude、合并、预估笔迹）做预研和压力测试是否可行，增大笔迹包流量下的性能、消息丢失统计、体验、延时等的性价比综合对比分析</strong></p>
 <p>详情见：<a href="https://developer.apple.com/documentation/uikit/touches_presses_and_gestures/handling_input_from_apple_pencil?language=objc" target="_blank" rel="noopener">Handling Input from Apple Pencil</a></p>
-<p>###iOS端白板绘制实现方案</p>
-<p>调研了目前网上白板的实现方式，基于不考虑压感值和角度的采集的情况下，都是基于UIResponder实现的，考虑优先实现一个画板的基础功能（撤销、恢复、橡皮等），实现方案有以下几种：</p>
-<p>####1.UIBezierPath➕drawRect实现<br>优点：实现简单<br>缺点：实现撤销、恢复等功能需要重绘调用drawRect，在累计笔迹大量的情况下，频繁刷新drawRect会导致内存过大</p>
-<p>####2.Quartz2D➕drawRect实现<br>优点：UIBezierPath其实是Quartz2D的封装，实现简单<br>缺点：因为重写了drawRect的方法，和方案一同样有笔迹过多的情况下内存过大的问题</p>
-<p>####3.UIBezierPath➕CAShapeLayer实现<br>优点：撤销、恢复等功能实现简单，内存小<br>缺点：橡皮实现较为复杂，需要注意优化计算量</p>
-<p>####4.OpenGLES实现<br>优点：实现自由度最高，性能理论可以调到最优<br>缺点：开发复杂，学习成本高，所有功能（橡皮、撤销、恢复、矩形等）需要采坑实现及调优</p>
+<h3 id="iOS端白板绘制实现方案">iOS端白板绘制实现方案</h3><p>调研了目前网上白板的实现方式，基于不考虑压感值和角度的采集的情况下，都是基于UIResponder实现的，考虑优先实现一个画板的基础功能（撤销、恢复、橡皮等），实现方案有以下几种：</p>
+<h4 id="1-UIBezierPath➕drawRect实现">1.UIBezierPath➕drawRect实现</h4><p>优点：实现简单<br>缺点：实现撤销、恢复等功能需要重绘调用drawRect，在累计笔迹大量的情况下，频繁刷新drawRect会导致内存过大</p>
+<h4 id="2-Quartz2D➕drawRect实现">2.Quartz2D➕drawRect实现</h4><p>优点：UIBezierPath其实是Quartz2D的封装，实现简单<br>缺点：因为重写了drawRect的方法，和方案一同样有笔迹过多的情况下内存过大的问题</p>
+<h4 id="3-UIBezierPath➕CAShapeLayer实现">3.UIBezierPath➕CAShapeLayer实现</h4><p>优点：撤销、恢复等功能实现简单，内存小<br>缺点：橡皮实现较为复杂，需要注意优化计算量</p>
+<h4 id="4-OpenGLES实现">4.OpenGLES实现</h4><p>优点：实现自由度最高，性能理论可以调到最优<br>缺点：开发复杂，学习成本高，所有功能（橡皮、撤销、恢复、矩形等）需要采坑实现及调优</p>
 <p>参考了大部分源码,一个高性能的白板基本采用方案三 UIBezierPath➕CAShapeLayer 实现</p>
-<p>###画板绘制流程</p>
-<p>####采集<br>每一个笔迹在开始、结束、移动的过程中有起始点B、终点E及移动点阵M1,M2,…,MN存在，iPad端绘制的同时会采集这些点阵通过NATS传输供学生端绘制，采集的通用格式为：</p>
+<h3 id="画板绘制流程">画板绘制流程</h3><h4 id="采集">采集</h4><p>每一个笔迹在开始、结束、移动的过程中有起始点B、终点E及移动点阵M1,M2,…,MN存在，iPad端绘制的同时会采集这些点阵通过NATS传输供学生端绘制，采集的通用格式为：</p>
 <pre><code>{
     <span class="string">"n"</span>:<span class="number">1</span>, <span class="comment">// 序号 no</span>
     <span class="string">"c"</span>:<span class="number">1</span>, <span class="comment">// 笔画颜色 color</span>
@@ -56,23 +53,19 @@
 </code></pre><p>其中，d的数组实际就是</p>
 <pre><code>[B,M1,M2,...,MN,E]
 </code></pre><p>针对每个笔迹，归类为以下绘制方式，值为e（0默认 1直线 2椭圆 3矩形 4橡皮擦）：<br>默认笔画（曲线）：对相邻的点做贝塞尔曲线（BezierPath），BezierPath分多个阶段，高阶的曲线更圆滑</p>
-<p>####贝塞尔曲线说明<br><a href="https://zh.wikipedia.org/zh-cn/貝茲曲線" target="_blank" rel="noopener">贝塞尔曲线</a><br><a href="https://developer.apple.com/documentation/uikit/uibezierpath?language=objc：" target="_blank" rel="noopener">Apple UIBezierPath</a></p>
+<h4 id="贝塞尔曲线说明">贝塞尔曲线说明</h4><p><a href="https://zh.wikipedia.org/zh-cn/貝茲曲線" target="_blank" rel="noopener">贝塞尔曲线</a><br><a href="https://developer.apple.com/documentation/uikit/uibezierpath?language=objc：" target="_blank" rel="noopener">Apple UIBezierPath</a></p>
 <p><img src="/images/15397483774667.gif" alt=""></p>
-<p>####曲线的优化计算</p>
-<p>1.移动到起始点 N1<br>2.当累计点到N2,N3,N4的时候，计算N2和N4的中点N3, 覆盖原来的N3点；<br>3.以N1为起始点对N3画一条二阶贝塞尔曲线，控制点为N2和N4<br>4.将N3做为起始点N1，N4作为第一个累计点N2，回到第一步</p>
+<h4 id="曲线的优化计算">曲线的优化计算</h4><p>1.移动到起始点 N1<br>2.当累计点到N2,N3,N4的时候，计算N2和N4的中点N3, 覆盖原来的N3点；<br>3.以N1为起始点对N3画一条二阶贝塞尔曲线，控制点为N2和N4<br>4.将N3做为起始点N1，N4作为第一个累计点N2，回到第一步</p>
 <p>详细参考：<a href="https://code.tutsplus.com/tutorials/smooth-freehand-drawing-on-ios--mobile-13164" target="_blank" rel="noopener">Smooth Freehand Drawing</a></p>
 <p>直线：取第一个点B和最后一个点E,画一条直线<br>矩形：取第一个点B和最后一个点E,范围内画一个矩形，需要注意起始点和终点的向量方向<br>椭圆：取第一个点B和最后一个点E,范围内画一个椭圆，需要注意起始点和终点的向量方向<br>点：当B和E的坐标相等时，就画一个点</p>
 <p>动作，值a（1 正常绘图 2 撤销 3 恢复 4 清空等）：<br>撤销：pop撤销栈最后一个临时图片并push恢复栈，渲染<br>恢复：pop恢复栈最后一个临时图片并push撤销栈，渲染<br>清空：清空所有栈及当前画板</p>
-<p>####点阵分片及重组</p>
-<pre><code>笔迹传输是按照每个笔迹采集的，如果一个笔迹的点阵数量过大，可以分片处理，NATS消息体里面会表示s和o表示分片的数量及序号，接收端需要收到全部分片后进行点阵<span class="keyword">d</span>的数组重组及绘制。
-</code></pre><p>####时间戳</p>
-<pre><code>需要和视频流里面的时间戳消息做对比，小于视频流时间戳的时候才显示笔迹。
+<h4 id="点阵分片及重组">点阵分片及重组</h4><pre><code>笔迹传输是按照每个笔迹采集的，如果一个笔迹的点阵数量过大，可以分片处理，NATS消息体里面会表示s和o表示分片的数量及序号，接收端需要收到全部分片后进行点阵<span class="keyword">d</span>的数组重组及绘制。
+</code></pre><h4 id="时间戳">时间戳</h4><pre><code>需要和视频流里面的时间戳消息做对比，小于视频流时间戳的时候才显示笔迹。
 </code></pre>]]></content>
     <summary type="html">
-    <![CDATA[<p>###Apple Pencil绘制原理</p>
-<p><img src="/images/15377762585144.png" alt=""></p>
+    <![CDATA[<h3 id="Apple_Pencil绘制原理">Apple Pencil绘制原理</h3><p><img src="/images/15377762585144.png" alt=""></p>
 <ul>
-<li>Apple Pencil 可以额外采集到 altitude（高度角）、azimuth（方位角）、for]]>
+<li>Apple Pencil 可以额外采集到 altitude（高]]>
     </summary>
     
       <category term="白板" scheme="http://yoursite.com/tags/%E7%99%BD%E6%9D%BF/"/>
@@ -88,7 +81,7 @@
     <link href="http://yoursite.com/2018/08/28/travis_ci_auto_deploy_hexo_to_vps/"/>
     <id>http://yoursite.com/2018/08/28/travis_ci_auto_deploy_hexo_to_vps/</id>
     <published>2018-08-28T04:00:00.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"><![CDATA[<h3 id="写在前面">写在前面</h3><blockquote>
 <p>N久之前在GitHub Page上部署了Hexo，本地生成文章的时候需要<code>hexo g&amp;&amp;hexo d</code>等步骤才能上传到GitHub，最近又把博客折腾到了VPS上，手动deploy到VPS的同时又不能更新GitHub上，因此搜索了一下解决方案，发现可以实现git flow push到source后，使用Travis CI 持续集成自动deploy到GitHub Page，同时推送到VPS服务器。</p>
 </blockquote>
@@ -256,7 +249,7 @@ git <span class="keyword">push</span>
     <link href="http://yoursite.com/2018/08/08/tencentcloudservice/"/>
     <id>http://yoursite.com/2018/08/08/tencentcloudservice/</id>
     <published>2018-08-08T14:12:15.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"><![CDATA[<h3 id="前言">前言</h3><p>工作需要做了一个简易的、通过API第三方人脸识别、人脸对比分析的App Demo，对比了一下各家提供的服务、SDK，最后选择了腾讯云的智能图像服务。<br>调用API的流程为：</p>
 <pre><code><span class="number">1.</span>鉴权签名 
 <span class="number">2.</span>调用人脸识别、人脸对比等API。
@@ -347,7 +340,7 @@ AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     <link href="http://yoursite.com/2018/08/01/http-headers/"/>
     <id>http://yoursite.com/2018/08/01/http-headers/</id>
     <published>2018-08-01T12:43:12.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"><![CDATA[<h3 id="前言">前言</h3><p>基于安全的需求，要在API（基于.Net Core）交互的过程中除了特有的鉴权外，还添加额外的Header。</p>
 <h3 id="Strict-Transport-Security">Strict-Transport-Security</h3><h4 id="1-概述">1.概述</h4><p><u>HTTP Strict Transport Security is an excellent feature to support on your site and strengthens your implementation of TLS by getting the User Agent to enforce the use of HTTPS. Recommended value strict-transport-security: max-age=31536000; includeSubDomains.</u></p>
 <p>HTTP Strict Transport Security（HTTP严格安全传输） 通常简称为HSTS，要求浏览器只能通过HTTPS访问当前资源，而不是HTTP。浏览器会自动把所有尝试使用HTTP的请求自动替换为HTTPS请求，在一定范围内（如钓鱼网站等）防止中间人攻击。</p>
@@ -444,7 +437,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/12/20/aspdotnetcoreswagger/"/>
     <id>http://yoursite.com/2017/12/20/aspdotnetcoreswagger/</id>
     <published>2017-12-20T07:25:04.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"><![CDATA[<p>swagger xml文件默认不上传到azure云主机，如需要上传需要修改 <strong>csproj</strong> 文件（Asp.Net Core环境）。添加如下配置：</p>
 <pre><code><span class="tag">&lt;<span class="title">PropertyGroup</span>&gt;</span>
   <span class="tag">&lt;<span class="title">GenerateDocumentationFile</span>&gt;</span>true<span class="tag">&lt;/<span class="title">GenerateDocumentationFile</span>&gt;</span>
@@ -479,7 +472,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/08/01/SQL-%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5/"/>
     <id>http://yoursite.com/2017/08/01/SQL-数据导入/</id>
     <published>2017-08-01T06:34:56.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"><![CDATA[<p>之前写API及处理后台数据的时候写了一些脚本，记录一下。</p>
 <p>快捷数据表操作的存储过程脚本。eg: exec ‘Z_InitData’,’目标表T1’,’源表T2’</p>
 <pre><code><span class="operator"><span class="keyword">Create</span> <span class="keyword">PROCEDURE</span> Z_InitData
@@ -533,7 +526,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/07/31/iOS-Article-001/"/>
     <id>http://yoursite.com/2017/07/31/iOS-Article-001/</id>
     <published>2017-07-31T13:52:35.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"><![CDATA[<h3 id="概念">概念</h3><p>GMT（Greenwich Mean Time）格林尼治时间<br>UTC（Coordinated Universal Time ）原子钟标准时间<br>Unix time（以UTC 1970年1月1号 00：00：00为基准时间）</p>
 <hr>
 <h3 id="sysctl_API">sysctl API</h3><p>iOS系统上次设备重启时间（iOS9后不能使用）</p>
@@ -591,7 +584,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/07/30/iOS-Tips-NSDictionary-NSArray-%E5%BF%AB%E6%8D%B7%E8%AE%A1%E7%AE%97%E5%87%BD%E6%95%B0/"/>
     <id>http://yoursite.com/2017/07/30/iOS-Tips-NSDictionary-NSArray-快捷计算函数/</id>
     <published>2017-07-30T15:15:46.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"><![CDATA[<p>NSArray 有快捷的汇总公式，只要用 @函数.键路径 即可：</p>
 <pre><code><span class="title">NSArray</span> *array = [NSArray arrayWithObjects:@<span class="string">"1.0"</span>,@<span class="string">"2.0"</span>,nil];
 <span class="title">CGFloat</span> sum = [[array valueForKeyPath:@<span class="string">"<span class="variable">@sum</span>.floatValue"</span>] floatValue];
@@ -620,7 +613,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/03/21/Python%E9%93%BE%E5%AE%B6%E7%88%AC%E8%99%AB/"/>
     <id>http://yoursite.com/2017/03/21/Python链家爬虫/</id>
     <published>2017-03-21T02:23:17.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"><![CDATA[<p>业余时间做了个链家的爬虫，爬取数据写入sqlite，方便浏览和对比。<br>具体参考了冰蓝大牛的博客<a href="http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="noopener">http://lanbing510.info/2016/03/15/Lianjia-Spider.html?utm_source=tuicool&amp;utm_medium=referral</a>, 根据链家最新的web样式做了修改（2017-03）爬在售的二手房的数据。</p>
 <p>链家对短时间内同一个IP的流量有监控，所以如果用多线程去爬，太快可能会被要求输入验证码。试了以下用代理ip池去爬，因为可用的免费代理ip不多也不稳定，就放弃了。后面想数据爬的也不多，就加个延时模拟人为慢慢爬了，另外还有个问题可能是单位时间内Request太快可能解析不到数据，就把延时放在BeautifulSoup解析后面，并加了如果没有数据则重复5次请求的验证过程，才成功抓全数据：</p>
 <pre><code><span class="tag">time</span>.<span class="function"><span class="title">sleep</span><span class="params">(np.random.rand()</span></span>*<span class="number">3</span>+<span class="number">3</span>)
@@ -783,7 +776,7 @@ app.UseCsp<span class="params">(opts =&gt; opts
     <link href="http://yoursite.com/2017/03/13/Python%E9%AB%98%E5%BE%B7%E7%88%AC%E8%99%AB/"/>
     <id>http://yoursite.com/2017/03/13/Python高德爬虫/</id>
     <published>2017-03-13T06:29:59.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"><![CDATA[<p>前段时间因公司需求，需要爬取高德地图的数据，就学习了下Python，并做了个简易的爬虫GUI。</p>
 <p>因为高德有api，所以爬数据灰常简单。<br>整个流程：输入城市编码-》根据api爬取数据-》导出到Excel<br>使用的库：BeautifulSoup PyQt5 openpyxl urllib2 requests等</p>
 <p>具体思路：</p>
@@ -935,7 +928,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
     <link href="http://yoursite.com/2017/03/01/iOS%20VPN%E5%BC%80%E5%8F%91/"/>
     <id>http://yoursite.com/2017/03/01/iOS VPN开发/</id>
     <published>2017-03-01T03:27:43.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"><![CDATA[<p>#####参考链接：<br>1.iOS 9 Network Extension VPN API编程指南<a href="http://www.helusi.com/ios9-network-extension-vpn-api/" target="_blank" rel="noopener">http://www.helusi.com/ios9-network-extension-vpn-api/</a><br>2.分享开发 iOS 和 Mac 全新 VPN 的艰难历程<a href="https://www.v2ex.com/t/264480" target="_blank" rel="noopener">https://www.v2ex.com/t/264480</a><br>3.Potatso原理解析<a href="https://www.kidneyband.com/?p=174" target="_blank" rel="noopener">https://www.kidneyband.com/?p=174</a></p>
 <p>#####苹果开发者文档：<br>NEPacketTunnelProvider<a href="https://developer.apple.com/reference/networkextension/nepackettunnelprovider?language=objc" target="_blank" rel="noopener">https://developer.apple.com/reference/networkextension/nepackettunnelprovider?language=objc</a><br>SimpleTunnel<a href="https://developer.apple.com/library/prerelease/content/samplecode/SimpleTunnel/Introduction/Intro.html" target="_blank" rel="noopener">https://developer.apple.com/library/prerelease/content/samplecode/SimpleTunnel/Introduction/Intro.html</a></p>
 ]]></content>
@@ -956,7 +949,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
     <link href="http://yoursite.com/2015/11/26/UITableView-and-UIActivityIndicatorView/"/>
     <id>http://yoursite.com/2015/11/26/UITableView-and-UIActivityIndicatorView/</id>
     <published>2015-11-25T16:01:59.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"><![CDATA[<hr>
 <p>storyboard 中 UIActivityIndicatorView 要放在tabelview下方<br>tableview y设置为0 重设约束才能保证tableview的顶部不会空白。</p>
 ]]></content>
@@ -975,7 +968,7 @@ wherestr = <span class="string">r'&amp;city=440106&amp;types=050301&amp;keywords
     <link href="http://yoursite.com/2015/08/18/NSDictionary-NSMutableDictionary/"/>
     <id>http://yoursite.com/2015/08/18/NSDictionary-NSMutableDictionary/</id>
     <published>2015-08-18T13:35:24.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"><![CDATA[<p>转自：<a href="http://seven-sally.lofter.com/post/19d861_5404fa" target="_blank" rel="noopener">http://seven-sally.lofter.com/post/19d861_5404fa</a></p>
 <h2 id="不可变词典NSDictionary">不可变词典NSDictionary</h2><h3 id="字典初始化">字典初始化</h3><pre><code><span class="built_in">NSNumber</span> *numObj = [<span class="built_in">NSNumber</span> numberWithInt:<span class="number">100</span>];
 </code></pre><h3 id="以一个元素初始化">以一个元素初始化</h3><pre><code>NSDictionary *dic = [NSDictionary <span class="string">dictionaryWithObject:</span>numObj <span class="string">forKey:</span>@<span class="string">"key"</span>];
@@ -1048,7 +1041,7 @@ for (<span class="typename">int</span> i = <span class="number">0</span>; i &lt;
     <link href="http://yoursite.com/2015/08/17/markdown-mark/"/>
     <id>http://yoursite.com/2015/08/17/markdown-mark/</id>
     <published>2015-08-16T16:01:59.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"><![CDATA[<p>参考<a href="http://ibruce.info/2013/11/26/markdown/" title="不如的博客" target="_blank" rel="noopener">markdown简明语法</a></p>
 <hr>
 <ol>
@@ -1114,7 +1107,7 @@ for (<span class="typename">int</span> i = <span class="number">0</span>; i &lt;
 <h2 id="链接">链接</h2><p>Markdown 语法：</p>
 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">email <span class="xml"><span class="tag">&lt;<span class="name">example@example.com</span>&gt;</span></span></span><br><span class="line">[<span class="string">GitHub</span>](<span class="link">http://github.com</span>)</span><br><span class="line">自动生成连接  <span class="xml"><span class="tag">&lt;<span class="name">http:</span>//<span class="attr">www.github.com</span>/&gt;</span></span></span><br></pre></td></tr></table></figure>
 <p><code>Control + Shift + L</code> 可插入Markdown语法。<br>如果是 MWeb 的文档库中的文档，拖放或<code>CMD + Option + I</code> 导入非图片时，会生成连接。<br>效果如下：</p>
-<p>Email 连接： <a href="&#109;&#97;&#x69;&#108;&#x74;&#111;&#58;&#x65;&#120;&#97;&#x6d;&#x70;&#108;&#101;&#x40;&#x65;&#120;&#x61;&#x6d;&#x70;&#x6c;&#x65;&#46;&#99;&#x6f;&#x6d;">&#x65;&#120;&#97;&#x6d;&#x70;&#108;&#101;&#x40;&#x65;&#120;&#x61;&#x6d;&#x70;&#x6c;&#x65;&#46;&#99;&#x6f;&#x6d;</a><br><a href="http://github.com" target="_blank" rel="noopener">连接标题Github网站</a><br>自动生成连接像： <a href="http://www.github.com/" target="_blank" rel="noopener">http://www.github.com/</a> 这样</p>
+<p>Email 连接： <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#58;&#x65;&#120;&#x61;&#109;&#112;&#x6c;&#x65;&#64;&#x65;&#x78;&#97;&#x6d;&#x70;&#108;&#101;&#46;&#x63;&#x6f;&#109;">&#x65;&#120;&#x61;&#109;&#112;&#x6c;&#x65;&#64;&#x65;&#x78;&#97;&#x6d;&#x70;&#108;&#101;&#46;&#x63;&#x6f;&#109;</a><br><a href="http://github.com" target="_blank" rel="noopener">连接标题Github网站</a><br>自动生成连接像： <a href="http://www.github.com/" target="_blank" rel="noopener">http://www.github.com/</a> 这样</p>
 <h2 id="区块引用">区块引用</h2><p>Markdown 语法：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">某某说:</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> 第一行引用</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> 第二行费用文字</span></span><br></pre></td></tr></table></figure>
 <p><code>CMD + Shift + B</code> 可插入Markdown语法。<br>效果如下：</p>
@@ -1219,7 +1212,7 @@ for (<span class="typename">int</span> i = <span class="number">0</span>; i &lt;
     <link href="http://yoursite.com/2015/08/13/postname/"/>
     <id>http://yoursite.com/2015/08/13/postname/</id>
     <published>2015-08-12T16:08:31.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"></content>
     <summary type="html">
     
@@ -1232,7 +1225,7 @@ for (<span class="typename">int</span> i = <span class="number">0</span>; i &lt;
     <link href="http://yoursite.com/2015/08/12/hello-world/"/>
     <id>http://yoursite.com/2015/08/12/hello-world/</id>
     <published>2015-08-11T16:01:59.000Z</published>
-    <updated>2018-10-17T03:58:32.021Z</updated>
+    <updated>2018-10-17T04:04:04.396Z</updated>
     <content type="html"><![CDATA[<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
 <h2 id="Quick_Start">Quick Start</h2><h3 id="Create_a_new_post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
 <p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
